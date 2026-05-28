@@ -77,7 +77,7 @@ les gens restent 3 secondes
 très peu de revenus (souvent quelques centimes pour beaucoup de visites)
 2. SEO / trafic viral
 
-Tu peux essayer de rank sur Google avec :
+Tu peux essayer de te classer sur Google avec :
 
 "quelle heure est-il"
 "current time now"
