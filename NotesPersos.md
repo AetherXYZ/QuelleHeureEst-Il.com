@@ -1,6 +1,6 @@
 # QuelleHeureEst-Il.com - NOTES PERSOS
 
-Y a-t-il un brevet déposé ou quelque chose comme ça pour quelle heure est il .com issu de bojack horseman ? "https://www.whattimeisitrightnow.com/"
+Y a-t-il un brevet déposé ou quelque chose comme ça pour quelle heure est-il .com issu de bojack horseman ? "https://www.whattimeisitrightnow.com/"
 peut-on l'utiliser librement comme nom et concept ?
 
 Oui — mais avec quelques nuances importantes.
