@@ -1,6 +1,6 @@
 # QuelleHeureEst-Il.com - NOTES PERSOS
 
-Y a-t-il un brevet déposé ou quelque chose comme ça pour quelle heure est il .com issu de bojack horseman ? "https://www.whattimeisitrightnow.com/"
+Y a-t-il un brevet déposé ou quelque chose comme ça pour quelle heure est-il .com issu de bojack horseman ? "https://www.whattimeisitrightnow.com/"
 peut-on l'utiliser librement comme nom et concept ?
 
 Oui — mais avec quelques nuances importantes.
@@ -77,7 +77,7 @@ les gens restent 3 secondes
 très peu de revenus (souvent quelques centimes pour beaucoup de visites)
 2. SEO / trafic viral
 
-Tu peux essayer de rank sur Google avec :
+Tu peux essayer de te classer sur Google avec :
 
 "quelle heure est-il"
 "current time now"
