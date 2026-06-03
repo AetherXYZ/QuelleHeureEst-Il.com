@@ -501,22 +501,22 @@ jobs:
                 }
               }
 
-              //   FR//  5. Fusionner jobs + check runs classiques, dédupliquer par ID
-              //  ENG//  5. Merge jobs + classic check runs, deduplicate by ID
-              const combined = [...classicRuns, ...jobsAsRuns];
-              const uniqueMap = new Map();
-              for (const run of combined) {
-                uniqueMap.set(run.id, run);
-              }
-              const uniqueRuns = Array.from(uniqueMap.values());
-
-              //   FR//  6. Filtrer par nom ou app.slug contenant "codeql" ou "code-scanning"
-              //  ENG//  6. Filter by name or app.slug containing "codeql" or "code-scanning"
-              codeqlRuns = uniqueRuns.filter(r => {
+              //   FR//  5. Filtrer les check runs classiques pour ne garder que ceux liés à CodeQL
+              //  ENG//  5. Filter classic check runs to keep only CodeQL-related ones
+              const classicCodeqlRuns = classicRuns.filter(r => {
                 const name = (r.name || "").toLowerCase();
                 const slug = (r.app && r.app.slug ? r.app.slug : "").toLowerCase();
                 return name.includes("codeql") || slug.includes("codeql") || slug.includes("code-scanning");
               });
+
+              //   FR//  6. Fusionner les jobs CodeQL (tous considérés comme CodeQL) + les check runs classiques filtrés
+              //  ENG//  6. Merge CodeQL jobs (all considered CodeQL) + filtered classic check runs
+              const combined = [...classicCodeqlRuns, ...jobsAsRuns];
+              const uniqueMap = new Map();
+              for (const run of combined) {
+                uniqueMap.set(run.id, run);
+              }
+              codeqlRuns = Array.from(uniqueMap.values());
 
               //   FR//  Log des checks CodeQL détectés après filtrage (diagnostic)
               //  ENG//  Log CodeQL checks detected after filtering (diagnostic)
@@ -989,20 +989,20 @@ jobs:
                     }
                   }
 
-                  //   FR//  4. Fusionner jobs + check runs classiques, dédupliquer par ID
-                  //  ENG//  4. Merge jobs + classic check runs, deduplicate by ID
-                  const combined = [...classicRuns, ...jobsAsRuns];
-                  const uniqueMap = new Map();
-                  for (const run of combined) uniqueMap.set(run.id, run);
-                  const uniqueRuns = Array.from(uniqueMap.values());
-
-                  //   FR//  5. Filtrer par nom ou app.slug contenant "codeql" ou "code-scanning"
-                  //  ENG//  5. Filter by name or app.slug containing "codeql" or "code-scanning"
-                  codeqlRuns = uniqueRuns.filter(r => {
+                  //   FR//  4. Filtrer les check runs classiques pour ne garder que ceux liés à CodeQL
+                  //  ENG//  4. Filter classic check runs to keep only CodeQL-related ones
+                  const classicCodeqlRuns = classicRuns.filter(r => {
                     const name = (r.name || "").toLowerCase();
                     const slug = (r.app && r.app.slug ? r.app.slug : "").toLowerCase();
                     return name.includes("codeql") || slug.includes("codeql") || slug.includes("code-scanning");
                   });
+
+                  //   FR//  5. Fusionner les jobs CodeQL (tous considérés comme CodeQL) + check runs classiques filtrés
+                  //  ENG//  5. Merge CodeQL jobs (all considered CodeQL) + filtered classic check runs
+                  const combined = [...classicCodeqlRuns, ...jobsAsRuns];
+                  const uniqueMap = new Map();
+                  for (const run of combined) uniqueMap.set(run.id, run);
+                  codeqlRuns = Array.from(uniqueMap.values());
 
                   log.verbose(`Checks CodeQL après filtrage (${codeqlRuns.length}) : ${codeqlRuns.map(r => `${r.name} [${r.status}/${r.conclusion}]`).join(', ') || '(aucun/none)'} / CodeQL checks after filtering (${codeqlRuns.length})`);
 
