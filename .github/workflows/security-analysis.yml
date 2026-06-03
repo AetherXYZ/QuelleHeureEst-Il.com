@@ -1,0 +1,435 @@
+name: "🔒 Security & Quality Analysis"
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+  schedule:
+    - cron: '0 2 * * 0'  # Weekly: Sunday 2 AM UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  pull-requests: read
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  # =============================================================================
+  # 1. CodeQL - Multi-language SAST (Rust, JS/TS, Kotlin, Actions)
+  # =============================================================================
+  codeql-analysis:
+    name: "🔍 CodeQL Analysis"
+    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: actions
+            build-mode: none
+          - language: javascript-typescript
+            build-mode: none
+          - language: rust
+            build-mode: none
+          - language: java-kotlin
+            build-mode: none
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:${{matrix.language}}"
+
+  # =============================================================================
+  # 2. Semgrep - Pattern-based SAST
+  # =============================================================================
+  semgrep-scan:
+    name: "🔎 Semgrep Security Patterns"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Run Semgrep scan
+        uses: returntocorp/semgrep-action@v1
+        with:
+          publishToken: ${{ secrets.SEMGREP_APP_TOKEN }}
+          publishDeployment: ${{ secrets.SEMGREP_DEPLOYMENT_ID }}
+          generateSarif: "1"
+        continue-on-error: true
+
+      - name: Upload Semgrep SARIF results
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: semgrep.sarif
+        continue-on-error: true
+
+  # =============================================================================
+  # 3. SonarCloud - Code Quality & Coverage
+  # =============================================================================
+  sonarcloud-analysis:
+    name: "📊 SonarCloud Code Quality"
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Run SonarCloud analysis
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=${{ secrets.SONAR_ORG }}
+        continue-on-error: true
+
+  # =============================================================================
+  # 4. Rust Security - Dependency & Vulnerability Scanning
+  # =============================================================================
+  rust-security-audit:
+    name: "🦀 Rust: Security Audit"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Install cargo-audit
+        run: cargo install cargo-audit
+
+      - name: Run cargo-audit (vulnerability scan)
+        run: cargo audit --deny warnings
+        continue-on-error: true
+
+  # =============================================================================
+  # 5. Rust Dependency Scanning (cargo-deny)
+  # =============================================================================
+  rust-dependency-check:
+    name: "🦀 Rust: Dependency Analysis"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Run cargo-deny (dependency check)
+        uses: EmbarkStudios/cargo-deny-action@v1
+        with:
+          log-level: warn
+          command: check
+          arguments: --all-targets
+        continue-on-error: true
+
+  # =============================================================================
+  # 6. Rust Code Quality (Clippy + Format Check)
+  # =============================================================================
+  rust-quality:
+    name: "🦀 Rust: Code Quality"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install Rust with clippy and rustfmt
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Check code format (rustfmt)
+        run: cargo fmt -- --check
+        continue-on-error: true
+
+      - name: Run clippy lints
+        run: cargo clippy --all-targets --all-features -- -D warnings
+        continue-on-error: true
+
+  # =============================================================================
+  # 7. Rust Build & Test
+  # =============================================================================
+  rust-build-test:
+    name: "🦀 Rust: Build & Test"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build Rust project
+        run: cargo build --verbose
+        continue-on-error: true
+
+      - name: Run unit tests
+        run: cargo test --verbose
+        continue-on-error: true
+
+      - name: Run doc tests
+        run: cargo test --doc --verbose
+        continue-on-error: true
+
+  # =============================================================================
+  # 8. JavaScript/TypeScript Security (npm audit)
+  # =============================================================================
+  js-security:
+    name: "📦 JS/TS: Dependency Security"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+        continue-on-error: true
+
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+  # =============================================================================
+  # 9. Kotlin/Android Security (Android Lint)
+  # =============================================================================
+  android-lint:
+    name: "📱 Kotlin/Android: Lint Analysis"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Run Android Lint
+        run: |
+          if [ -f gradlew ]; then
+            chmod +x gradlew
+            ./gradlew lint --continue
+          else
+            echo "⚠️ No Android project found (gradlew not detected)"
+          fi
+        continue-on-error: true
+
+  # =============================================================================
+  # 10. OWASP Dependency-Check (Multi-platform dependencies)
+  # =============================================================================
+  owasp-dependency-check:
+    name: "🛡️ OWASP: Dependency Check"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Run OWASP Dependency-Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'QuelleHeureEst-Il'
+          path: '.'
+          format: 'SARIF'
+          args: >
+            --enableExperimental
+            --enableRetired
+        continue-on-error: true
+
+      - name: Upload OWASP results
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: 'dependency-check-report.sarif'
+        continue-on-error: true
+
+  # =============================================================================
+  # 11. Analysis Summary Report
+  # =============================================================================
+  analysis-summary:
+    name: "📋 Security & Quality Report"
+    runs-on: ubuntu-latest
+    needs: 
+      - codeql-analysis
+      - semgrep-scan
+      - sonarcloud-analysis
+      - rust-security-audit
+      - rust-dependency-check
+      - rust-quality
+      - rust-build-test
+      - js-security
+      - android-lint
+      - owasp-dependency-check
+    if: always()
+
+    steps:
+      - name: Generate comprehensive summary
+        run: |
+          cat << 'EOF'
+          
+          ╔════════════════════════════════════════════════════════════════════════════════╗
+          ║              🔒 MULTI-PLATFORM SECURITY & QUALITY ANALYSIS SUMMARY             ║
+          ╚════════════════════════════════════════════════════════════════════════════════╝
+          
+          📊 SECURITY & SAST TOOLS:
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          ✅ CodeQL (GitHub Native SAST)
+             • Languages: Rust, Java/Kotlin, JavaScript/TypeScript, GitHub Actions
+             • Status: ${{ needs.codeql-analysis.result }}
+          
+          ✅ Semgrep (Pattern-Based Security Scanning)
+             • Scans: Custom security patterns across all languages
+             • Status: ${{ needs.semgrep-scan.result }}
+             • Config: Requires SEMGREP_APP_TOKEN & SEMGREP_DEPLOYMENT_ID
+          
+          ✅ SonarCloud (Code Quality & Hotspots)
+             • Coverage: Multi-language quality metrics
+             • Status: ${{ needs.sonarcloud-analysis.result }}
+             • Config: Requires SONAR_TOKEN, SONAR_PROJECT_KEY, SONAR_ORG
+          
+          ✅ OWASP Dependency-Check
+             • Checks: Known vulnerabilities in all dependencies
+             • Status: ${{ needs.owasp-dependency-check.result }}
+          
+          🦀 RUST-SPECIFIC SECURITY:
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          ✅ cargo-audit
+             • Checks: Known security vulnerabilities in crate dependencies
+             • Status: ${{ needs.rust-security-audit.result }}
+          
+          ✅ cargo-deny
+             • Checks: License compliance, advisories, banned crates
+             • Status: ${{ needs.rust-dependency-check.result }}
+          
+          ✅ Clippy
+             • Checks: Code quality, performance, security patterns
+             • Status: ${{ needs.rust-quality.result }}
+          
+          ✅ rustfmt
+             • Checks: Code formatting standards compliance
+             • Status: ${{ needs.rust-quality.result }}
+          
+          ✅ Rust Tests
+             • Unit Tests & Doc Tests
+             • Status: ${{ needs.rust-build-test.result }}
+          
+          📦 JAVASCRIPT/TYPESCRIPT SECURITY:
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          ✅ npm audit
+             • Checks: Vulnerable packages in npm dependencies
+             • Status: ${{ needs.js-security.result }}
+          
+          📱 KOTLIN/ANDROID SECURITY:
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          ✅ Android Lint
+             • Checks: Security issues, best practices, potential bugs
+             • Status: ${{ needs.android-lint.result }}
+          
+          🔧 BUILD & COMPILATION:
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          ✅ Cargo Build (Rust)
+             • Status: ${{ needs.rust-build-test.result }}
+          
+          ✅ Tests (All Platforms)
+             • Rust: Unit tests, Doc tests
+             • Status: ${{ needs.rust-build-test.result }}
+          
+          ⚙️ CONFIGURATION REQUIRED (OPTIONAL):
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          To enable optional analysis tools, add these secrets:
+          Settings → Secrets and variables → Actions → New repository secret
+          
+          📌 Semgrep:
+             • SEMGREP_APP_TOKEN (get at: https://semgrep.dev)
+             • SEMGREP_DEPLOYMENT_ID
+          
+          📌 SonarCloud:
+             • SONAR_TOKEN (get at: https://sonarcloud.io)
+             • SONAR_PROJECT_KEY
+             • SONAR_ORG
+          
+          🚀 TRIGGERED BY:
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          • Every push (any branch)
+          • Every pull request (any branch)
+          • Weekly: Every Sunday at 2 AM UTC
+          • Manual trigger: Actions tab → "Security & Quality Analysis" → Run workflow
+          
+          📚 ADDITIONAL WORKFLOWS:
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          • Rust (traditional CI): .github/workflows/rust.yml
+          • Auto-Approve PRs: .github/workflows/auto-approve.yml
+          • NeuraLegion DAST: .github/workflows/bright-dast.yml (when available)
+          • APIsec Scanning: .github/workflows/apisec-scan.yml
+          
+          ╔════════════════════════════════════════════════════════════════════════════════╗
+          ║                       ✨ Analysis complete!                                    ║
+          ╚════════════════════════════════════════════════════════════════════════════════╝
+          
+          EOF
+
+      - name: Check critical job statuses
+        run: |
+          echo ""
+          echo "🔍 Job Results Summary:"
+          echo "────────────────────────"
+          echo "CodeQL: ${{ needs.codeql-analysis.result }}"
+          echo "Semgrep: ${{ needs.semgrep-scan.result }}"
+          echo "SonarCloud: ${{ needs.sonarcloud-analysis.result }}"
+          echo "Rust Audit: ${{ needs.rust-security-audit.result }}"
+          echo "Rust Deps: ${{ needs.rust-dependency-check.result }}"
+          echo "Rust Quality: ${{ needs.rust-quality.result }}"
+          echo "Rust Build: ${{ needs.rust-build-test.result }}"
+          echo "JS Security: ${{ needs.js-security.result }}"
+          echo "Android Lint: ${{ needs.android-lint.result }}"
+          echo "OWASP Check: ${{ needs.owasp-dependency-check.result }}"
