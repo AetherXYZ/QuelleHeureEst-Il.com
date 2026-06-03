@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 # delete-runs.sh
 
 OWNER="Phoen0x"
