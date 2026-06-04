@@ -1,7 +1,7 @@
 #!/bin/bash
-# =============================================================================
-# delete-runs-advanced.sh
-# =============================================================================
+# =========================================================================================================
+# Nettoyage_du_Dépôt.sh
+# =========================================================================================================
 # But : Garder uniquement les N runs les plus anciens et les N runs les plus récents
 #       par état (success, failure, etc.) pour chaque workflow GitHub Actions.
 #
@@ -28,7 +28,7 @@
 #    Modifier DRY_RUN=true dans la configuration ci-dessous
 #
 # Utilisation :
-#   ./delete-runs-advanced.sh
+#   ./Nettoyage_du_Dépôt.sh
 #
 # Configuration (modifier les valeurs ci-dessous) :
 #   OWNER         : organisation ou utilisateur propriétaire du dépôt
@@ -38,7 +38,7 @@
 #   DRY_RUN       : true  = simulation (aucune suppression)
 #                   false = suppression réelle
 #   FILTER_STATUS : laisser vide pour tous les états, ou mettre ex: ("success" "failure")
-# =============================================================================
+# =========================================================================================================
 
 set -euo pipefail
 
@@ -51,19 +51,18 @@ KEEP_OLDEST=3
 KEEP_NEWEST=3
 
 # Mode dry-run : true = affiche uniquement, false = supprime réellement
-DRY_RUN=false                  # Passe à true pour tester sans supprimer
+DRY_RUN=true                  # Passe à true pour tester sans supprimer
 
 # États à traiter (laisser vide pour tous les états)
 # États possibles : success, failure, cancelled, skipped, action_required, neutral, timed_out
-# Exemple : FILTER_STATUS=("success" "failure")
 FILTER_STATUS=()               # Exemple : ("success" "failure"), Vide = tous les états.
 
 # Limite de runs à récupérer par appel API (max GitHub = 100)
 PER_PAGE=100
 
-# =================================================
+# ======================================
 # Vérifications préalables
-# =================================================
+# ======================================
 
 # Vérifier que gh est disponible
 if ! command -v gh &> /dev/null; then
@@ -87,18 +86,15 @@ fi
 # Fonctions
 # =================================================
 
-# Fonction pour récupérer TOUS les runs d'un workflow avec pagination (via gh api)
-# Utilise gh api directement car gh run list ne gère pas nativement la pagination complète
-# Arguments : workflow_name (string)
-# Retourne : JSON list (tableau d'objets avec id, created_at, status, conclusion)
-get_all_runs() {
-    local workflow="$1"
+# Fonction pour récupérer TOUTES les runs d'un workflow à partir de son ID (numérique)
+get_all_runs_by_id() {
+    local workflow_id="$1"
     local page=1
     local all_runs="[]"
     
     while true; do
         # Construire la requête API (encoder les espaces dans le nom du workflow)
-        local query="repos/$OWNER/$REPO/actions/workflows/${workflow// /%20}/runs?page=$page&per_page=$PER_PAGE"
+        local query="repos/$OWNER/$REPO/actions/workflows/$workflow_id/runs?page=$page&per_page=$PER_PAGE"
         local response
         response=$(gh api "$query" --jq '.workflow_runs[] | {id: .id, created_at: .created_at, status: .status, conclusion: .conclusion}' 2>/dev/null) || break
         
@@ -146,18 +142,21 @@ process_run() {
 # =================================================
 
 # Récupérer tous les workflows
-echo "🔍 Récupération de la liste des workflows..."
-# Lister tous les workflows (en utilisant --json pour éviter les problèmes de formatage)
-WORKFLOW_NAMES=$(gh workflow list --repo "$OWNER/$REPO" --json name --jq '.[].name')
+echo "🔍 Récupération de la liste des workflows avec leurs IDs..."
+# On récupère la liste des workflows (id ET name)
+WORKFLOWS_JSON=$(gh workflow list --repo "$OWNER/$REPO" --json id,name --jq '.[] | {id: .id, name: .name}')
 
-# Boucle sur chaque workflow (gère les noms avec espaces)
-echo "$WORKFLOW_NAMES" | while IFS= read -r WORKFLOW; do
-    [[ -z "$WORKFLOW" ]] && continue
+# On boucle sur chaque workflow (un objet par ligne)
+echo "$WORKFLOWS_JSON" | while IFS= read -r workflow_obj; do
+    # Extraire l'ID et le nom depuis l'objet JSON
+    WORKFLOW_ID=$(echo "$workflow_obj" | jq -r '.id')
+    WORKFLOW_NAME=$(echo "$workflow_obj" | jq -r '.name')
+    
     echo ""
-    echo "📦 Workflow : $WORKFLOW"
+    echo "📦 Workflow : $WORKFLOW_NAME (ID: $WORKFLOW_ID)"
     
     # Récupérer tous les runs (avec pagination)
-    RUNS_JSON=$(get_all_runs "$WORKFLOW")
+    RUNS_JSON=$(get_all_runs_by_id "$WORKFLOW_ID")
     TOTAL_RUNS=$(echo "$RUNS_JSON" | jq length)
     
     if [[ "$TOTAL_RUNS" -eq 0 ]]; then
