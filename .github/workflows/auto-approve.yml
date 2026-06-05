@@ -257,7 +257,15 @@ jobs:
             const isBolt = commits.data.some(c => {
               const name  = c.commit.committer?.name?.toLowerCase()  || "";
               const email = c.commit.committer?.email?.toLowerCase() || "";
-              return name.includes("bolt") || email.includes("bolt") || email.includes("stackblitz");
+              const authorType = c.author?.type; // "User", "Bot", etc.
+              const authorLogin = c.author?.login?.toLowerCase() || "";
+
+              return (
+                name.includes("bolt") || 
+                email.includes("bolt") || 
+                email.includes("stackblitz") ||
+                (authorType === "Bot" && authorLogin.includes("stackblitz"))
+              );
             });
 
             if (isBolt) {
@@ -850,7 +858,15 @@ jobs:
                 const isBolt = commitsData.some(c => {
                   const name  = c.commit.committer?.name?.toLowerCase()  || "";
                   const email = c.commit.committer?.email?.toLowerCase() || "";
-                  return name.includes("bolt") || email.includes("bolt") || email.includes("stackblitz");
+                  const authorType = c.author?.type; // "User", "Bot", etc.
+                  const authorLogin = c.author?.login?.toLowerCase() || "";
+
+                  return (
+                    name.includes("bolt") || 
+                    email.includes("bolt") || 
+                    email.includes("stackblitz") ||
+                    (authorType === "Bot" && authorLogin.includes("stackblitz"))
+                  );
                 });
 
                 if (isBolt) {
