@@ -1,0 +1,3233 @@
+{
+  "structurePatches": [
+    "@esbuild/win32-x64 close before @emnapi",
+    "ansi-styles close before ansi-regex",
+    "fraction.js 5.3.4 close before foreground-child",
+    "hasown close before glob/brace-expansion",
+    "@rollup win32-ia32 double bracket"
+  ],
+  "relocations": [
+    {
+      "from": "node_modules/@typescript-eslint/eslint-plugin",
+      "to": "node_modules/@types/react",
+      "line": 2041,
+      "version": "18.3.11"
+    },
+    {
+      "from": "node_modules/@typescript-eslint/eslint-plugin",
+      "to": "node_modules/@types/react-dom",
+      "line": 2051,
+      "version": "18.3.0"
+    }
+  ],
+  "merges": [
+    {
+      "key": "node_modules/@types/react",
+      "action": "insert",
+      "version": "18.3.11",
+      "source": "relocated-from-eslint-plugin-splice",
+      "line": 2041
+    },
+    {
+      "key": "node_modules/@types/react-dom",
+      "action": "insert",
+      "version": "18.3.0",
+      "source": "relocated-from-eslint-plugin-splice",
+      "line": 2051
+    },
+    {
+      "key": "node_modules/@typescript-eslint/eslint-plugin",
+      "action": "splice-resolved",
+      "keptVersion": "8.60.1",
+      "fromVersion": "8.8.1",
+      "addedFields": [
+        "dependencies.graphemer",
+        "engines",
+        "funding",
+        "peerDependencies"
+      ]
+    },
+    {
+      "key": "node_modules/@typescript-eslint/type-utils",
+      "action": "splice-resolved",
+      "keptVersion": "8.60.1",
+      "fromVersion": "8.8.1",
+      "addedFields": [
+        "engines",
+        "funding",
+        "peerDependencies"
+      ]
+    },
+    {
+      "key": "node_modules/@typescript-eslint/typescript-estree",
+      "action": "inline-splice-resolved",
+      "keptVersion": "8.60.1",
+      "fromVersion": "8.8.1",
+      "addedFields": [
+        "dependencies.fast-glob",
+        "dependencies.is-glob",
+        "engines",
+        "funding",
+        "peerDependencies"
+      ]
+    },
+    {
+      "key": "node_modules/sucrase",
+      "action": "inline-splice-resolved",
+      "keptVersion": "3.35.1",
+      "fromVersion": "3.35.0",
+      "addedFields": [
+        "dependencies.glob",
+        "dependencies.ts-interface-checker",
+        "bin",
+        "engines"
+      ]
+    },
+    {
+      "key": "node_modules/ts-api-utils",
+      "action": "inline-splice-resolved",
+      "keptVersion": "2.5.0",
+      "fromVersion": "1.3.0",
+      "addedFields": []
+    },
+    {
+      "key": "node_modules/typescript-eslint",
+      "action": "inline-splice-resolved",
+      "keptVersion": "8.60.1",
+      "fromVersion": "8.8.1",
+      "addedFields": [
+        "engines",
+        "funding",
+        "peerDependencies"
+      ]
+    },
+    {
+      "key": "node_modules/@alloc/quick-lru",
+      "action": "insert",
+      "version": "5.2.0",
+      "source": "block",
+      "line": 35
+    },
+    {
+      "key": "node_modules/@babel/code-frame",
+      "action": "insert",
+      "version": "7.29.7",
+      "source": "block",
+      "line": 48
+    },
+    {
+      "key": "node_modules/@babel/compat-data",
+      "action": "insert",
+      "version": "7.29.7",
+      "source": "block",
+      "line": 63
+    },
+    {
+      "key": "node_modules/@babel/core",
+      "action": "insert",
+      "version": "7.29.7",
+      "source": "block",
+      "line": 73
+    },
+    {
+      "key": "node_modules/@babel/generator",
+      "action": "insert",
+      "version": "7.29.7",
+      "source": "block",
+      "line": 104
+    },
+    {
+      "key": "node_modules/@babel/helper-compilation-targets",
+      "action": "insert",
+      "version": "7.29.7",
+      "source": "block",
+      "line": 121
+    },
+    {
+      "key": "node_modules/@babel/helper-globals",
+      "action": "insert",
+      "version": "7.29.7",
+      "source": "block",
+      "line": 138
+    },
+    {
+      "key": "node_modules/@babel/helper-module-imports",
+      "action": "insert",
+      "version": "7.29.7",
+      "source": "block",
+      "line": 148
+    },
+    {
+      "key": "node_modules/@babel/helper-module-transforms",
+      "action": "insert",
+      "version": "7.29.7",
+      "source": "block",
+      "line": 162
+    },
+    {
+      "key": "node_modules/@babel/helper-plugin-utils",
+      "action": "insert",
+      "version": "7.29.7",
+      "source": "block",
+      "line": 180
+    },
+    {
+      "key": "node_modules/@babel/helper-string-parser",
+      "action": "insert",
+      "version": "7.29.7",
+      "source": "block",
+      "line": 190
+    },
+    {
+      "key": "node_modules/@babel/helper-validator-identifier",
+      "action": "insert",
+      "version": "7.29.7",
+      "source": "block",
+      "line": 200
+    },
+    {
+      "key": "node_modules/@babel/helper-validator-option",
+      "action": "insert",
+      "version": "7.29.7",
+      "source": "block",
+      "line": 210
+    },
+    {
+      "key": "node_modules/@babel/helpers",
+      "action": "insert",
+      "version": "7.29.7",
+      "source": "block",
+      "line": 220
+    },
+    {
+      "key": "node_modules/@babel/parser",
+      "action": "insert",
+      "version": "7.29.7",
+      "source": "block",
+      "line": 234
+    },
+    {
+      "key": "node_modules/@babel/plugin-transform-react-jsx-self",
+      "action": "insert",
+      "version": "7.29.7",
+      "source": "block",
+      "line": 250
+    },
+    {
+      "key": "node_modules/@babel/plugin-transform-react-jsx-source",
+      "action": "insert",
+      "version": "7.29.7",
+      "source": "block",
+      "line": 266
+    },
+    {
+      "key": "node_modules/@babel/template",
+      "action": "insert",
+      "version": "7.29.7",
+      "source": "block",
+      "line": 282
+    },
+    {
+      "key": "node_modules/@babel/traverse",
+      "action": "insert",
+      "version": "7.29.7",
+      "source": "block",
+      "line": 297
+    },
+    {
+      "key": "node_modules/@babel/types",
+      "action": "insert",
+      "version": "7.29.7",
+      "source": "block",
+      "line": 316
+    },
+    {
+      "key": "node_modules/@esbuild/aix-ppc64",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 330
+    },
+    {
+      "key": "node_modules/@esbuild/android-arm",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 347
+    },
+    {
+      "key": "node_modules/@esbuild/android-arm64",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 364
+    },
+    {
+      "key": "node_modules/@esbuild/android-x64",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 381
+    },
+    {
+      "key": "node_modules/@esbuild/darwin-arm64",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 398
+    },
+    {
+      "key": "node_modules/@esbuild/darwin-x64",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 415
+    },
+    {
+      "key": "node_modules/@esbuild/freebsd-arm64",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 432
+    },
+    {
+      "key": "node_modules/@esbuild/freebsd-x64",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 449
+    },
+    {
+      "key": "node_modules/@esbuild/linux-arm",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 466
+    },
+    {
+      "key": "node_modules/@esbuild/linux-arm64",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 483
+    },
+    {
+      "key": "node_modules/@esbuild/linux-ia32",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 500
+    },
+    {
+      "key": "node_modules/@esbuild/linux-loong64",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 517
+    },
+    {
+      "key": "node_modules/@esbuild/linux-mips64el",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 534
+    },
+    {
+      "key": "node_modules/@esbuild/linux-ppc64",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 551
+    },
+    {
+      "key": "node_modules/@esbuild/linux-riscv64",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 568
+    },
+    {
+      "key": "node_modules/@esbuild/linux-s390x",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 585
+    },
+    {
+      "key": "node_modules/@esbuild/linux-x64",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 602
+    },
+    {
+      "key": "node_modules/@esbuild/netbsd-arm64",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 619
+    },
+    {
+      "key": "node_modules/@esbuild/netbsd-x64",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 636
+    },
+    {
+      "key": "node_modules/@esbuild/openbsd-arm64",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 653
+    },
+    {
+      "key": "node_modules/@esbuild/openbsd-x64",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 670
+    },
+    {
+      "key": "node_modules/@esbuild/openharmony-arm64",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 687
+    },
+    {
+      "key": "node_modules/@esbuild/sunos-x64",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 704
+    },
+    {
+      "key": "node_modules/@esbuild/win32-arm64",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 721
+    },
+    {
+      "key": "node_modules/@esbuild/win32-ia32",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 738
+    },
+    {
+      "key": "node_modules/@esbuild/win32-x64",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 755
+    },
+    {
+      "key": "node_modules/@emnapi/core",
+      "action": "insert",
+      "version": "1.10.0",
+      "source": "block",
+      "line": 772
+    },
+    {
+      "key": "node_modules/@emnapi/runtime",
+      "action": "insert",
+      "version": "1.10.0",
+      "source": "block",
+      "line": 784
+    },
+    {
+      "key": "node_modules/@emnapi/wasi-threads",
+      "action": "insert",
+      "version": "1.2.1",
+      "source": "block",
+      "line": 795
+    },
+    {
+      "key": "node_modules/@eslint-community/eslint-utils",
+      "action": "insert",
+      "version": "4.9.1",
+      "source": "block",
+      "line": 806
+    },
+    {
+      "key": "node_modules/@eslint-community/eslint-utils/node_modules/eslint-visitor-keys",
+      "action": "insert",
+      "version": "3.4.3",
+      "source": "block",
+      "line": 825
+    },
+    {
+      "key": "node_modules/@eslint-community/regexpp",
+      "action": "insert",
+      "version": "4.12.2",
+      "source": "block",
+      "line": 838
+    },
+    {
+      "key": "node_modules/@eslint/config-array",
+      "action": "insert",
+      "version": "0.21.2",
+      "source": "block",
+      "line": 848
+    },
+    {
+      "key": "node_modules/@eslint/config-helpers",
+      "action": "insert",
+      "version": "0.4.2",
+      "source": "block",
+      "line": 863
+    },
+    {
+      "key": "node_modules/@eslint/core",
+      "action": "insert",
+      "version": "0.17.0",
+      "source": "block",
+      "line": 876
+    },
+    {
+      "key": "node_modules/@eslint/eslintrc",
+      "action": "insert",
+      "version": "3.3.5",
+      "source": "block",
+      "line": 889
+    },
+    {
+      "key": "node_modules/@eslint/eslintrc/node_modules/globals",
+      "action": "insert",
+      "version": "14.0.0",
+      "source": "block",
+      "line": 913
+    },
+    {
+      "key": "node_modules/@eslint/js",
+      "action": "insert",
+      "version": "9.39.4",
+      "source": "block",
+      "line": 926
+    },
+    {
+      "key": "node_modules/@eslint/object-schema",
+      "action": "insert",
+      "version": "2.1.7",
+      "source": "block",
+      "line": 939
+    },
+    {
+      "key": "node_modules/@eslint/plugin-kit",
+      "action": "insert",
+      "version": "0.4.1",
+      "source": "block",
+      "line": 949
+    },
+    {
+      "key": "node_modules/@humanfs/core",
+      "action": "insert",
+      "version": "0.19.2",
+      "source": "block",
+      "line": 963
+    },
+    {
+      "key": "node_modules/@humanfs/node",
+      "action": "insert",
+      "version": "0.16.8",
+      "source": "block",
+      "line": 976
+    },
+    {
+      "key": "node_modules/@humanfs/types",
+      "action": "insert",
+      "version": "0.15.0",
+      "source": "block",
+      "line": 991
+    },
+    {
+      "key": "node_modules/@humanwhocodes/module-importer",
+      "action": "insert",
+      "version": "1.0.1",
+      "source": "block",
+      "line": 1001
+    },
+    {
+      "key": "node_modules/@humanwhocodes/retry",
+      "action": "insert",
+      "version": "0.4.3",
+      "source": "block",
+      "line": 1015
+    },
+    {
+      "key": "node_modules/@isaacs/cliui",
+      "action": "insert",
+      "version": "8.0.2",
+      "source": "block",
+      "line": 1029
+    },
+    {
+      "key": "node_modules/@jridgewell/gen-mapping",
+      "action": "insert",
+      "version": "0.3.13",
+      "source": "block",
+      "line": 1046
+    },
+    {
+      "key": "node_modules/@jridgewell/remapping",
+      "action": "insert",
+      "version": "2.3.5",
+      "source": "block",
+      "line": 1057
+    },
+    {
+      "key": "node_modules/@jridgewell/resolve-uri",
+      "action": "insert",
+      "version": "3.1.2",
+      "source": "block",
+      "line": 1068
+    },
+    {
+      "key": "node_modules/@jridgewell/sourcemap-codec",
+      "action": "insert",
+      "version": "1.5.5",
+      "source": "block",
+      "line": 1078
+    },
+    {
+      "key": "node_modules/@jridgewell/trace-mapping",
+      "action": "insert",
+      "version": "0.3.31",
+      "source": "block",
+      "line": 1085
+    },
+    {
+      "key": "node_modules/@napi-rs/wasm-runtime",
+      "action": "insert",
+      "version": "1.1.4",
+      "source": "block",
+      "line": 1096
+    },
+    {
+      "key": "node_modules/@nodelib/fs.scandir",
+      "action": "insert",
+      "version": "2.1.5",
+      "source": "block",
+      "line": 1115
+    },
+    {
+      "key": "node_modules/@nodelib/fs.stat",
+      "action": "insert",
+      "version": "2.0.5",
+      "source": "block",
+      "line": 1129
+    },
+    {
+      "key": "node_modules/@nodelib/fs.walk",
+      "action": "insert",
+      "version": "1.2.8",
+      "source": "block",
+      "line": 1139
+    },
+    {
+      "key": "node_modules/@rolldown/pluginutils",
+      "action": "insert",
+      "version": "1.0.0-beta.27",
+      "source": "block",
+      "line": 1153
+    },
+    {
+      "key": "node_modules/@rollup/rollup-android-arm-eabi",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1160
+    },
+    {
+      "key": "node_modules/@rollup/rollup-android-arm64",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1174
+    },
+    {
+      "key": "node_modules/@rollup/rollup-darwin-arm64",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1188
+    },
+    {
+      "key": "node_modules/@rollup/rollup-darwin-x64",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1202
+    },
+    {
+      "key": "node_modules/@rollup/rollup-freebsd-arm64",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1216
+    },
+    {
+      "key": "node_modules/@rollup/rollup-freebsd-x64",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1230
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-arm-gnueabihf",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1244
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-arm-musleabihf",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1258
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-arm64-gnu",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1272
+    },
+    {
+      "key": "node_modules/@oxc-project/types",
+      "action": "insert",
+      "version": "0.128.0",
+      "source": "block",
+      "line": 1277
+    },
+    {
+      "key": "node_modules/@pkgjs/parseargs",
+      "action": "insert",
+      "version": "0.11.0",
+      "source": "block",
+      "line": 1287
+    },
+    {
+      "key": "node_modules/@rolldown/binding-android-arm64",
+      "action": "insert",
+      "version": "1.0.0-rc.18",
+      "source": "block",
+      "line": 1297
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-arm64-musl",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1311
+    },
+    {
+      "key": "node_modules/@rolldown/binding-darwin-arm64",
+      "action": "insert",
+      "version": "1.0.0-rc.18",
+      "source": "block",
+      "line": 1321
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-loong64-gnu",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1335
+    },
+    {
+      "key": "node_modules/@rolldown/binding-darwin-x64",
+      "action": "insert",
+      "version": "1.0.0-rc.18",
+      "source": "block",
+      "line": 1347
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-loong64-musl",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1361
+    },
+    {
+      "key": "node_modules/@rolldown/binding-freebsd-x64",
+      "action": "insert",
+      "version": "1.0.0-rc.18",
+      "source": "block",
+      "line": 1373
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-ppc64-gnu",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1387
+    },
+    {
+      "key": "node_modules/@rolldown/binding-linux-arm-gnueabihf",
+      "action": "insert",
+      "version": "1.0.0-rc.18",
+      "source": "block",
+      "line": 1399
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-ppc64-musl",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1413
+    },
+    {
+      "key": "node_modules/@rolldown/binding-linux-arm64-gnu",
+      "action": "insert",
+      "version": "1.0.0-rc.18",
+      "source": "block",
+      "line": 1424
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-riscv64-gnu",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1438
+    },
+    {
+      "key": "node_modules/@rolldown/binding-linux-arm64-musl",
+      "action": "insert",
+      "version": "1.0.0-rc.18",
+      "source": "block",
+      "line": 1449
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-riscv64-musl",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1463
+    },
+    {
+      "key": "node_modules/@rolldown/binding-linux-ppc64-gnu",
+      "action": "insert",
+      "version": "1.0.0-rc.18",
+      "source": "block",
+      "line": 1474
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-s390x-gnu",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1488
+    },
+    {
+      "key": "node_modules/@rolldown/binding-linux-s390x-gnu",
+      "action": "insert",
+      "version": "1.0.0-rc.18",
+      "source": "block",
+      "line": 1497
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-x64-gnu",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1511
+    },
+    {
+      "key": "node_modules/@rolldown/binding-linux-x64-gnu",
+      "action": "insert",
+      "version": "1.0.0-rc.18",
+      "source": "block",
+      "line": 1520
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-x64-musl",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1534
+    },
+    {
+      "key": "node_modules/@rolldown/binding-linux-x64-musl",
+      "action": "insert",
+      "version": "1.0.0-rc.18",
+      "source": "block",
+      "line": 1543
+    },
+    {
+      "key": "node_modules/@rollup/rollup-openbsd-x64",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1557
+    },
+    {
+      "key": "node_modules/@rollup/rollup-openharmony-arm64",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1571
+    },
+    {
+      "key": "node_modules/@rolldown/binding-openharmony-arm64",
+      "action": "insert",
+      "version": "1.0.0-rc.18",
+      "source": "block",
+      "line": 1580
+    },
+    {
+      "key": "node_modules/@rollup/rollup-win32-arm64-msvc",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1594
+    },
+    {
+      "key": "node_modules/@rolldown/binding-wasm32-wasi",
+      "action": "insert",
+      "version": "1.0.0-rc.18",
+      "source": "block",
+      "line": 1605
+    },
+    {
+      "key": "node_modules/@rollup/rollup-win32-ia32-msvc",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1619
+    },
+    {
+      "key": "node_modules/@rolldown/binding-win32-arm64-msvc",
+      "action": "insert",
+      "version": "1.0.0-rc.18",
+      "source": "block",
+      "line": 1634
+    },
+    {
+      "key": "node_modules/@rollup/rollup-win32-x64-gnu",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1648
+    },
+    {
+      "key": "node_modules/@rolldown/binding-win32-x64-msvc",
+      "action": "insert",
+      "version": "1.0.0-rc.18",
+      "source": "block",
+      "line": 1657
+    },
+    {
+      "key": "node_modules/@rollup/rollup-win32-x64-msvc",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 1671
+    },
+    {
+      "key": "node_modules/@tauri-apps/api",
+      "action": "insert",
+      "version": "2.11.0",
+      "source": "block",
+      "line": 1695
+    },
+    {
+      "key": "node_modules/@tauri-apps/cli",
+      "action": "insert",
+      "version": "2.11.2",
+      "source": "block",
+      "line": 1706
+    },
+    {
+      "key": "node_modules/@tauri-apps/cli-darwin-arm64",
+      "action": "insert",
+      "version": "2.11.2",
+      "source": "block",
+      "line": 1736
+    },
+    {
+      "key": "node_modules/@tauri-apps/cli-darwin-x64",
+      "action": "insert",
+      "version": "2.11.2",
+      "source": "block",
+      "line": 1753
+    },
+    {
+      "key": "node_modules/@tauri-apps/cli-linux-arm-gnueabihf",
+      "action": "insert",
+      "version": "2.11.2",
+      "source": "block",
+      "line": 1770
+    },
+    {
+      "key": "node_modules/@tauri-apps/cli-linux-arm64-gnu",
+      "action": "insert",
+      "version": "2.11.2",
+      "source": "block",
+      "line": 1787
+    },
+    {
+      "key": "node_modules/@tauri-apps/cli-linux-arm64-musl",
+      "action": "insert",
+      "version": "2.11.2",
+      "source": "block",
+      "line": 1804
+    },
+    {
+      "key": "node_modules/@tauri-apps/cli-linux-riscv64-gnu",
+      "action": "insert",
+      "version": "2.11.2",
+      "source": "block",
+      "line": 1821
+    },
+    {
+      "key": "node_modules/@tauri-apps/cli-linux-x64-gnu",
+      "action": "insert",
+      "version": "2.11.2",
+      "source": "block",
+      "line": 1838
+    },
+    {
+      "key": "node_modules/@tauri-apps/cli-linux-x64-musl",
+      "action": "insert",
+      "version": "2.11.2",
+      "source": "block",
+      "line": 1855
+    },
+    {
+      "key": "node_modules/@tauri-apps/cli-win32-arm64-msvc",
+      "action": "insert",
+      "version": "2.11.2",
+      "source": "block",
+      "line": 1872
+    },
+    {
+      "key": "node_modules/@tauri-apps/cli-win32-ia32-msvc",
+      "action": "insert",
+      "version": "2.11.2",
+      "source": "block",
+      "line": 1889
+    },
+    {
+      "key": "node_modules/@tauri-apps/cli-win32-x64-msvc",
+      "action": "insert",
+      "version": "2.11.2",
+      "source": "block",
+      "line": 1906
+    },
+    {
+      "key": "node_modules/@tybys/wasm-util",
+      "action": "insert",
+      "version": "0.10.2",
+      "source": "block",
+      "line": 1923
+    },
+    {
+      "key": "node_modules/@types/babel__core",
+      "action": "insert",
+      "version": "7.20.5",
+      "source": "block",
+      "line": 1934
+    },
+    {
+      "key": "node_modules/@types/babel__generator",
+      "action": "insert",
+      "version": "7.27.0",
+      "source": "block",
+      "line": 1948
+    },
+    {
+      "key": "node_modules/@types/babel__template",
+      "action": "insert",
+      "version": "7.4.4",
+      "source": "block",
+      "line": 1958
+    },
+    {
+      "key": "node_modules/@types/babel__traverse",
+      "action": "insert",
+      "version": "7.28.0",
+      "source": "block",
+      "line": 1969
+    },
+    {
+      "key": "node_modules/@types/estree",
+      "action": "insert",
+      "version": "1.0.9",
+      "source": "block",
+      "line": 1979
+    },
+    {
+      "key": "node_modules/@types/json-schema",
+      "action": "insert",
+      "version": "7.0.15",
+      "source": "block",
+      "line": 1986
+    },
+    {
+      "key": "node_modules/@types/prop-types",
+      "action": "insert",
+      "version": "15.7.15",
+      "source": "block",
+      "line": 1993
+    },
+    {
+      "key": "node_modules/@types/react",
+      "action": "promoted-newer",
+      "keptVersion": "18.3.30",
+      "fromVersion": "18.3.11",
+      "addedFields": [],
+      "source": "block",
+      "line": 2000
+    },
+    {
+      "key": "node_modules/@types/react-dom",
+      "action": "promoted-newer",
+      "keptVersion": "18.3.7",
+      "fromVersion": "18.3.0",
+      "addedFields": [
+        "dependencies"
+      ],
+      "source": "block",
+      "line": 2011
+    },
+    {
+      "key": "node_modules/@typescript-eslint/eslint-plugin",
+      "action": "insert",
+      "version": "8.60.1",
+      "source": "block",
+      "line": 2021
+    },
+    {
+      "key": "node_modules/@typescript-eslint/eslint-plugin/node_modules/ignore",
+      "action": "insert",
+      "version": "7.0.5",
+      "source": "block",
+      "line": 2053
+    },
+    {
+      "key": "node_modules/@typescript-eslint/parser",
+      "action": "insert",
+      "version": "8.60.1",
+      "source": "block",
+      "line": 2063
+    },
+    {
+      "key": "node_modules/@typescript-eslint/project-service",
+      "action": "insert",
+      "version": "8.60.1",
+      "source": "block",
+      "line": 2108
+    },
+    {
+      "key": "node_modules/@typescript-eslint/scope-manager",
+      "action": "insert",
+      "version": "8.60.1",
+      "source": "block",
+      "line": 2130
+    },
+    {
+      "key": "node_modules/@typescript-eslint/tsconfig-utils",
+      "action": "insert",
+      "version": "8.60.1",
+      "source": "block",
+      "line": 2164
+    },
+    {
+      "key": "node_modules/@typescript-eslint/type-utils",
+      "action": "insert",
+      "version": "8.60.1",
+      "source": "block",
+      "line": 2181
+    },
+    {
+      "key": "node_modules/@typescript-eslint/types",
+      "action": "insert",
+      "version": "8.60.1",
+      "source": "block",
+      "line": 2208
+    },
+    {
+      "key": "node_modules/@typescript-eslint/typescript-estree",
+      "action": "insert",
+      "version": "8.60.1",
+      "source": "block",
+      "line": 2233
+    },
+    {
+      "key": "node_modules/@typescript-eslint/typescript-estree/node_modules/balanced-match",
+      "action": "insert",
+      "version": "4.0.4",
+      "source": "block",
+      "line": 2265
+    },
+    {
+      "key": "node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion",
+      "action": "insert",
+      "version": "5.0.6",
+      "source": "block",
+      "line": 2275
+    },
+    {
+      "key": "node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch",
+      "action": "insert",
+      "version": "10.2.5",
+      "source": "block",
+      "line": 2288
+    },
+    {
+      "key": "node_modules/@typescript-eslint/typescript-estree/node_modules/semver",
+      "action": "insert",
+      "version": "7.8.2",
+      "source": "block",
+      "line": 2331
+    },
+    {
+      "key": "node_modules/@typescript-eslint/utils",
+      "action": "insert",
+      "version": "8.60.1",
+      "source": "block",
+      "line": 2344
+    },
+    {
+      "key": "node_modules/@typescript-eslint/visitor-keys",
+      "action": "insert",
+      "version": "8.60.1",
+      "source": "block",
+      "line": 2368
+    },
+    {
+      "key": "node_modules/@typescript-eslint/visitor-keys/node_modules/eslint-visitor-keys",
+      "action": "insert",
+      "version": "5.0.1",
+      "source": "block",
+      "line": 2397
+    },
+    {
+      "key": "node_modules/@vitejs/plugin-react",
+      "action": "insert",
+      "version": "4.7.0",
+      "source": "block",
+      "line": 2410
+    },
+    {
+      "key": "node_modules/acorn",
+      "action": "insert",
+      "version": "8.16.0",
+      "source": "block",
+      "line": 2431
+    },
+    {
+      "key": "node_modules/acorn-jsx",
+      "action": "insert",
+      "version": "5.3.2",
+      "source": "block",
+      "line": 2444
+    },
+    {
+      "key": "node_modules/ajv",
+      "action": "insert",
+      "version": "6.15.0",
+      "source": "block",
+      "line": 2454
+    },
+    {
+      "key": "node_modules/ansi-styles",
+      "action": "insert",
+      "version": "4.3.0",
+      "source": "block",
+      "line": 2471
+    },
+    {
+      "key": "node_modules/ansi-regex",
+      "action": "insert",
+      "version": "6.1.0",
+      "source": "block",
+      "line": 2487
+    },
+    {
+      "key": "node_modules/any-promise",
+      "action": "insert",
+      "version": "1.3.0",
+      "source": "block",
+      "line": 2499
+    },
+    {
+      "key": "node_modules/anymatch",
+      "action": "insert",
+      "version": "3.1.3",
+      "source": "block",
+      "line": 2506
+    },
+    {
+      "key": "node_modules/arg",
+      "action": "insert",
+      "version": "5.0.2",
+      "source": "block",
+      "line": 2520
+    },
+    {
+      "key": "node_modules/argparse",
+      "action": "insert",
+      "version": "2.0.1",
+      "source": "block",
+      "line": 2527
+    },
+    {
+      "key": "node_modules/autoprefixer",
+      "action": "insert",
+      "version": "10.5.0",
+      "source": "block",
+      "line": 2534
+    },
+    {
+      "key": "node_modules/balanced-match",
+      "action": "insert",
+      "version": "1.0.2",
+      "source": "block",
+      "line": 2577
+    },
+    {
+      "key": "node_modules/binary-extensions",
+      "action": "insert",
+      "version": "2.3.0",
+      "source": "block",
+      "line": 2606
+    },
+    {
+      "key": "node_modules/brace-expansion",
+      "action": "insert",
+      "version": "1.1.15",
+      "source": "block",
+      "line": 2619
+    },
+    {
+      "key": "node_modules/braces",
+      "action": "insert",
+      "version": "3.0.3",
+      "source": "block",
+      "line": 2630
+    },
+    {
+      "key": "node_modules/browserslist",
+      "action": "insert",
+      "version": "4.28.2",
+      "source": "block",
+      "line": 2643
+    },
+    {
+      "key": "node_modules/callsites",
+      "action": "insert",
+      "version": "3.1.0",
+      "source": "block",
+      "line": 2677
+    },
+    {
+      "key": "node_modules/camelcase-css",
+      "action": "insert",
+      "version": "2.0.1",
+      "source": "block",
+      "line": 2687
+    },
+    {
+      "key": "node_modules/caniuse-lite",
+      "action": "insert",
+      "version": "1.0.30001793",
+      "source": "block",
+      "line": 2697
+    },
+    {
+      "key": "node_modules/chalk",
+      "action": "insert",
+      "version": "4.1.2",
+      "source": "block",
+      "line": 2718
+    },
+    {
+      "key": "node_modules/chokidar",
+      "action": "insert",
+      "version": "3.6.0",
+      "source": "block",
+      "line": 2735
+    },
+    {
+      "key": "node_modules/chokidar/node_modules/glob-parent",
+      "action": "insert",
+      "version": "5.1.2",
+      "source": "block",
+      "line": 2760
+    },
+    {
+      "key": "node_modules/color-convert",
+      "action": "insert",
+      "version": "2.0.1",
+      "source": "block",
+      "line": 2773
+    },
+    {
+      "key": "node_modules/color-name",
+      "action": "insert",
+      "version": "1.1.4",
+      "source": "block",
+      "line": 2786
+    },
+    {
+      "key": "node_modules/commander",
+      "action": "insert",
+      "version": "4.1.1",
+      "source": "block",
+      "line": 2793
+    },
+    {
+      "key": "node_modules/concat-map",
+      "action": "insert",
+      "version": "0.0.1",
+      "source": "block",
+      "line": 2803
+    },
+    {
+      "key": "node_modules/convert-source-map",
+      "action": "insert",
+      "version": "2.0.0",
+      "source": "block",
+      "line": 2810
+    },
+    {
+      "key": "node_modules/cross-spawn",
+      "action": "insert",
+      "version": "7.0.6",
+      "source": "block",
+      "line": 2817
+    },
+    {
+      "key": "node_modules/cssesc",
+      "action": "insert",
+      "version": "3.0.0",
+      "source": "block",
+      "line": 2832
+    },
+    {
+      "key": "node_modules/csstype",
+      "action": "insert",
+      "version": "3.2.3",
+      "source": "block",
+      "line": 2845
+    },
+    {
+      "key": "node_modules/debug",
+      "action": "insert",
+      "version": "4.4.3",
+      "source": "block",
+      "line": 2852
+    },
+    {
+      "key": "node_modules/deep-is",
+      "action": "insert",
+      "version": "0.1.4",
+      "source": "block",
+      "line": 2870
+    },
+    {
+      "key": "node_modules/detect-libc",
+      "action": "insert",
+      "version": "2.1.2",
+      "source": "block",
+      "line": 2876
+    },
+    {
+      "key": "node_modules/didyoumean",
+      "action": "insert",
+      "version": "1.2.2",
+      "source": "block",
+      "line": 2886
+    },
+    {
+      "key": "node_modules/dlv",
+      "action": "insert",
+      "version": "1.1.3",
+      "source": "block",
+      "line": 2893
+    },
+    {
+      "key": "node_modules/electron-to-chromium",
+      "action": "insert",
+      "version": "1.5.367",
+      "source": "block",
+      "line": 2900
+    },
+    {
+      "key": "node_modules/es-errors",
+      "action": "insert",
+      "version": "1.3.0",
+      "source": "block",
+      "line": 2907
+    },
+    {
+      "key": "node_modules/esbuild",
+      "action": "insert",
+      "version": "0.27.7",
+      "source": "block",
+      "line": 2917
+    },
+    {
+      "key": "node_modules/eastasianwidth",
+      "action": "insert",
+      "version": "0.2.0",
+      "source": "block",
+      "line": 2960
+    },
+    {
+      "key": "node_modules/emoji-regex",
+      "action": "insert",
+      "version": "9.2.2",
+      "source": "block",
+      "line": 2972
+    },
+    {
+      "key": "node_modules/escalade",
+      "action": "insert",
+      "version": "3.2.0",
+      "source": "block",
+      "line": 2978
+    },
+    {
+      "key": "node_modules/escape-string-regexp",
+      "action": "insert",
+      "version": "4.0.0",
+      "source": "block",
+      "line": 2988
+    },
+    {
+      "key": "node_modules/eslint",
+      "action": "insert",
+      "version": "9.39.4",
+      "source": "block",
+      "line": 3001
+    },
+    {
+      "key": "node_modules/eslint-plugin-react-hooks",
+      "action": "insert",
+      "version": "5.2.0",
+      "source": "block",
+      "line": 3061
+    },
+    {
+      "key": "node_modules/eslint-plugin-react-refresh",
+      "action": "insert",
+      "version": "0.4.26",
+      "source": "block",
+      "line": 3074
+    },
+    {
+      "key": "node_modules/eslint-scope",
+      "action": "insert",
+      "version": "8.4.0",
+      "source": "block",
+      "line": 3084
+    },
+    {
+      "key": "node_modules/eslint-visitor-keys",
+      "action": "insert",
+      "version": "4.2.1",
+      "source": "block",
+      "line": 3101
+    },
+    {
+      "key": "node_modules/eslint/node_modules/ansi-styles",
+      "action": "insert",
+      "version": "4.3.0",
+      "source": "block",
+      "line": 3114
+    },
+    {
+      "key": "node_modules/eslint/node_modules/chalk",
+      "action": "insert",
+      "version": "4.1.2",
+      "source": "block",
+      "line": 3129
+    },
+    {
+      "key": "node_modules/eslint/node_modules/color-convert",
+      "action": "insert",
+      "version": "2.0.1",
+      "source": "block",
+      "line": 3145
+    },
+    {
+      "key": "node_modules/eslint/node_modules/color-name",
+      "action": "insert",
+      "version": "1.1.4",
+      "source": "block",
+      "line": 3157
+    },
+    {
+      "key": "node_modules/eslint/node_modules/escape-string-regexp",
+      "action": "insert",
+      "version": "4.0.0",
+      "source": "block",
+      "line": 3163
+    },
+    {
+      "key": "node_modules/eslint/node_modules/has-flag",
+      "action": "insert",
+      "version": "4.0.0",
+      "source": "block",
+      "line": 3175
+    },
+    {
+      "key": "node_modules/eslint/node_modules/supports-color",
+      "action": "insert",
+      "version": "7.2.0",
+      "source": "block",
+      "line": 3184
+    },
+    {
+      "key": "node_modules/espree",
+      "action": "insert",
+      "version": "10.4.0",
+      "source": "block",
+      "line": 3196
+    },
+    {
+      "key": "node_modules/esquery",
+      "action": "insert",
+      "version": "1.7.0",
+      "source": "block",
+      "line": 3214
+    },
+    {
+      "key": "node_modules/esrecurse",
+      "action": "insert",
+      "version": "4.3.0",
+      "source": "block",
+      "line": 3227
+    },
+    {
+      "key": "node_modules/estraverse",
+      "action": "insert",
+      "version": "5.3.0",
+      "source": "block",
+      "line": 3240
+    },
+    {
+      "key": "node_modules/esutils",
+      "action": "insert",
+      "version": "2.0.3",
+      "source": "block",
+      "line": 3250
+    },
+    {
+      "key": "node_modules/fast-deep-equal",
+      "action": "insert",
+      "version": "3.1.3",
+      "source": "block",
+      "line": 3260
+    },
+    {
+      "key": "node_modules/fast-glob",
+      "action": "insert",
+      "version": "3.3.3",
+      "source": "block",
+      "line": 3267
+    },
+    {
+      "key": "node_modules/fast-glob/node_modules/glob-parent",
+      "action": "insert",
+      "version": "5.1.2",
+      "source": "block",
+      "line": 3284
+    },
+    {
+      "key": "node_modules/fast-json-stable-stringify",
+      "action": "insert",
+      "version": "2.1.0",
+      "source": "block",
+      "line": 3297
+    },
+    {
+      "key": "node_modules/fast-levenshtein",
+      "action": "insert",
+      "version": "2.0.6",
+      "source": "block",
+      "line": 3304
+    },
+    {
+      "key": "node_modules/fastq",
+      "action": "insert",
+      "version": "1.20.1",
+      "source": "block",
+      "line": 3311
+    },
+    {
+      "key": "node_modules/file-entry-cache",
+      "action": "insert",
+      "version": "8.0.0",
+      "source": "block",
+      "line": 3321
+    },
+    {
+      "key": "node_modules/fill-range",
+      "action": "insert",
+      "version": "7.1.1",
+      "source": "block",
+      "line": 3334
+    },
+    {
+      "key": "node_modules/find-up",
+      "action": "insert",
+      "version": "5.0.0",
+      "source": "block",
+      "line": 3347
+    },
+    {
+      "key": "node_modules/flat-cache",
+      "action": "insert",
+      "version": "4.0.1",
+      "source": "block",
+      "line": 3364
+    },
+    {
+      "key": "node_modules/flatted",
+      "action": "insert",
+      "version": "3.4.2",
+      "source": "block",
+      "line": 3378
+    },
+    {
+      "key": "node_modules/fraction.js",
+      "action": "insert",
+      "version": "5.3.4",
+      "source": "block",
+      "line": 3385
+    },
+    {
+      "key": "node_modules/foreground-child",
+      "action": "insert",
+      "version": "3.3.0",
+      "source": "block",
+      "line": 3392
+    },
+    {
+      "key": "node_modules/fsevents",
+      "action": "insert",
+      "version": "2.3.3",
+      "source": "block",
+      "line": 3422
+    },
+    {
+      "key": "node_modules/function-bind",
+      "action": "insert",
+      "version": "1.1.2",
+      "source": "block",
+      "line": 3437
+    },
+    {
+      "key": "node_modules/gensync",
+      "action": "insert",
+      "version": "1.0.0-beta.2",
+      "source": "block",
+      "line": 3447
+    },
+    {
+      "key": "node_modules/glob",
+      "action": "insert",
+      "version": "10.5.0",
+      "source": "block",
+      "line": 3457
+    },
+    {
+      "key": "node_modules/glob-parent",
+      "action": "insert",
+      "version": "6.0.2",
+      "source": "block",
+      "line": 3479
+    },
+    {
+      "key": "node_modules/globals",
+      "action": "insert",
+      "version": "15.15.0",
+      "source": "block",
+      "line": 3492
+    },
+    {
+      "key": "node_modules/has-flag",
+      "action": "insert",
+      "version": "4.0.0",
+      "source": "block",
+      "line": 3505
+    },
+    {
+      "key": "node_modules/hasown",
+      "action": "insert",
+      "version": "2.0.4",
+      "source": "block",
+      "line": 3515
+    },
+    {
+      "key": "node_modules/glob/node_modules/brace-expansion",
+      "action": "insert",
+      "version": "2.1.0",
+      "source": "block",
+      "line": 3522
+    },
+    {
+      "key": "node_modules/glob/node_modules/minimatch",
+      "action": "insert",
+      "version": "9.0.9",
+      "source": "block",
+      "line": 3532
+    },
+    {
+      "key": "node_modules/graphemer",
+      "action": "insert",
+      "version": "1.4.0",
+      "source": "block",
+      "line": 3560
+    },
+    {
+      "key": "node_modules/ignore",
+      "action": "insert",
+      "version": "5.3.2",
+      "source": "block",
+      "line": 3578
+    },
+    {
+      "key": "node_modules/import-fresh",
+      "action": "insert",
+      "version": "3.3.1",
+      "source": "block",
+      "line": 3588
+    },
+    {
+      "key": "node_modules/imurmurhash",
+      "action": "insert",
+      "version": "0.1.4",
+      "source": "block",
+      "line": 3605
+    },
+    {
+      "key": "node_modules/is-binary-path",
+      "action": "insert",
+      "version": "2.1.0",
+      "source": "block",
+      "line": 3615
+    },
+    {
+      "key": "node_modules/is-core-module",
+      "action": "insert",
+      "version": "2.16.2",
+      "source": "block",
+      "line": 3628
+    },
+    {
+      "key": "node_modules/is-extglob",
+      "action": "insert",
+      "version": "2.1.1",
+      "source": "block",
+      "line": 3644
+    },
+    {
+      "key": "node_modules/is-fullwidth-code-point",
+      "action": "insert",
+      "version": "3.0.0",
+      "source": "block",
+      "line": 3654
+    },
+    {
+      "key": "node_modules/is-glob",
+      "action": "insert",
+      "version": "4.0.3",
+      "source": "block",
+      "line": 3663
+    },
+    {
+      "key": "node_modules/is-number",
+      "action": "insert",
+      "version": "7.0.0",
+      "source": "block",
+      "line": 3676
+    },
+    {
+      "key": "node_modules/isexe",
+      "action": "insert",
+      "version": "2.0.0",
+      "source": "block",
+      "line": 3686
+    },
+    {
+      "key": "node_modules/jiti",
+      "action": "insert",
+      "version": "1.21.7",
+      "source": "block",
+      "line": 3693
+    },
+    {
+      "key": "node_modules/jackspeak",
+      "action": "insert",
+      "version": "3.4.3",
+      "source": "block",
+      "line": 3701
+    },
+    {
+      "key": "node_modules/js-tokens",
+      "action": "insert",
+      "version": "4.0.0",
+      "source": "block",
+      "line": 3725
+    },
+    {
+      "key": "node_modules/js-yaml",
+      "action": "insert",
+      "version": "4.2.0",
+      "source": "block",
+      "line": 3731
+    },
+    {
+      "key": "node_modules/jsesc",
+      "action": "insert",
+      "version": "3.1.0",
+      "source": "block",
+      "line": 3761
+    },
+    {
+      "key": "node_modules/json-buffer",
+      "action": "insert",
+      "version": "3.0.1",
+      "source": "block",
+      "line": 3774
+    },
+    {
+      "key": "node_modules/json-schema-traverse",
+      "action": "insert",
+      "version": "0.4.1",
+      "source": "block",
+      "line": 3781
+    },
+    {
+      "key": "node_modules/json-stable-stringify-without-jsonify",
+      "action": "insert",
+      "version": "1.0.1",
+      "source": "block",
+      "line": 3788
+    },
+    {
+      "key": "node_modules/json5",
+      "action": "insert",
+      "version": "2.2.3",
+      "source": "block",
+      "line": 3795
+    },
+    {
+      "key": "node_modules/keyv",
+      "action": "insert",
+      "version": "4.5.4",
+      "source": "block",
+      "line": 3808
+    },
+    {
+      "key": "node_modules/levn",
+      "action": "insert",
+      "version": "0.4.1",
+      "source": "block",
+      "line": 3818
+    },
+    {
+      "key": "node_modules/lightningcss",
+      "action": "insert",
+      "version": "1.32.0",
+      "source": "block",
+      "line": 3832
+    },
+    {
+      "key": "node_modules/lightningcss-android-arm64",
+      "action": "insert",
+      "version": "1.32.0",
+      "source": "block",
+      "line": 3862
+    },
+    {
+      "key": "node_modules/lightningcss-darwin-arm64",
+      "action": "insert",
+      "version": "1.32.0",
+      "source": "block",
+      "line": 3883
+    },
+    {
+      "key": "node_modules/lightningcss-darwin-x64",
+      "action": "insert",
+      "version": "1.32.0",
+      "source": "block",
+      "line": 3904
+    },
+    {
+      "key": "node_modules/lightningcss-freebsd-x64",
+      "action": "insert",
+      "version": "1.32.0",
+      "source": "block",
+      "line": 3925
+    },
+    {
+      "key": "node_modules/lightningcss-linux-arm-gnueabihf",
+      "action": "insert",
+      "version": "1.32.0",
+      "source": "block",
+      "line": 3946
+    },
+    {
+      "key": "node_modules/lightningcss-linux-arm64-gnu",
+      "action": "insert",
+      "version": "1.32.0",
+      "source": "block",
+      "line": 3967
+    },
+    {
+      "key": "node_modules/lightningcss-linux-arm64-musl",
+      "action": "insert",
+      "version": "1.32.0",
+      "source": "block",
+      "line": 3988
+    },
+    {
+      "key": "node_modules/lightningcss-linux-x64-gnu",
+      "action": "insert",
+      "version": "1.32.0",
+      "source": "block",
+      "line": 4009
+    },
+    {
+      "key": "node_modules/lightningcss-linux-x64-musl",
+      "action": "insert",
+      "version": "1.32.0",
+      "source": "block",
+      "line": 4030
+    },
+    {
+      "key": "node_modules/lightningcss-win32-arm64-msvc",
+      "action": "insert",
+      "version": "1.32.0",
+      "source": "block",
+      "line": 4051
+    },
+    {
+      "key": "node_modules/lightningcss-win32-x64-msvc",
+      "action": "insert",
+      "version": "1.32.0",
+      "source": "block",
+      "line": 4072
+    },
+    {
+      "key": "node_modules/lilconfig",
+      "action": "insert",
+      "version": "3.1.3",
+      "source": "block",
+      "line": 4093
+    },
+    {
+      "key": "node_modules/lines-and-columns",
+      "action": "insert",
+      "version": "1.2.4",
+      "source": "block",
+      "line": 4106
+    },
+    {
+      "key": "node_modules/locate-path",
+      "action": "insert",
+      "version": "6.0.0",
+      "source": "block",
+      "line": 4113
+    },
+    {
+      "key": "node_modules/lodash.merge",
+      "action": "insert",
+      "version": "4.6.2",
+      "source": "block",
+      "line": 4129
+    },
+    {
+      "key": "node_modules/loose-envify",
+      "action": "insert",
+      "version": "1.4.0",
+      "source": "block",
+      "line": 4136
+    },
+    {
+      "key": "node_modules/lru-cache",
+      "action": "insert",
+      "version": "5.1.1",
+      "source": "block",
+      "line": 4148
+    },
+    {
+      "key": "node_modules/lucide-react",
+      "action": "insert",
+      "version": "0.344.0",
+      "source": "block",
+      "line": 4158
+    },
+    {
+      "key": "node_modules/merge2",
+      "action": "insert",
+      "version": "1.4.1",
+      "source": "block",
+      "line": 4167
+    },
+    {
+      "key": "node_modules/micromatch",
+      "action": "insert",
+      "version": "4.0.8",
+      "source": "block",
+      "line": 4177
+    },
+    {
+      "key": "node_modules/minimatch",
+      "action": "insert",
+      "version": "3.1.5",
+      "source": "block",
+      "line": 4191
+    },
+    {
+      "key": "node_modules/minipass",
+      "action": "insert",
+      "version": "7.1.2",
+      "source": "block",
+      "line": 4204
+    },
+    {
+      "key": "node_modules/ms",
+      "action": "insert",
+      "version": "2.1.3",
+      "source": "block",
+      "line": 4213
+    },
+    {
+      "key": "node_modules/mz",
+      "action": "insert",
+      "version": "2.7.0",
+      "source": "block",
+      "line": 4220
+    },
+    {
+      "key": "node_modules/nanoid",
+      "action": "insert",
+      "version": "3.3.12",
+      "source": "block",
+      "line": 4232
+    },
+    {
+      "key": "node_modules/natural-compare",
+      "action": "insert",
+      "version": "1.4.0",
+      "source": "block",
+      "line": 4251
+    },
+    {
+      "key": "node_modules/node-releases",
+      "action": "insert",
+      "version": "2.0.47",
+      "source": "block",
+      "line": 4258
+    },
+    {
+      "key": "node_modules/normalize-path",
+      "action": "insert",
+      "version": "3.0.0",
+      "source": "block",
+      "line": 4275
+    },
+    {
+      "key": "node_modules/normalize-range",
+      "action": "insert",
+      "version": "0.1.2",
+      "source": "block",
+      "line": 4285
+    },
+    {
+      "key": "node_modules/object-assign",
+      "action": "insert",
+      "version": "4.1.1",
+      "source": "block",
+      "line": 4294
+    },
+    {
+      "key": "node_modules/object-hash",
+      "action": "insert",
+      "version": "3.0.0",
+      "source": "block",
+      "line": 4304
+    },
+    {
+      "key": "node_modules/optionator",
+      "action": "insert",
+      "version": "0.9.4",
+      "source": "block",
+      "line": 4314
+    },
+    {
+      "key": "node_modules/p-limit",
+      "action": "insert",
+      "version": "3.1.0",
+      "source": "block",
+      "line": 4332
+    },
+    {
+      "key": "node_modules/p-locate",
+      "action": "insert",
+      "version": "5.0.0",
+      "source": "block",
+      "line": 4348
+    },
+    {
+      "key": "node_modules/package-json-from-dist",
+      "action": "insert",
+      "version": "1.0.1",
+      "source": "block",
+      "line": 4364
+    },
+    {
+      "key": "node_modules/parent-module",
+      "action": "insert",
+      "version": "1.0.1",
+      "source": "block",
+      "line": 4370
+    },
+    {
+      "key": "node_modules/path-exists",
+      "action": "insert",
+      "version": "4.0.0",
+      "source": "block",
+      "line": 4383
+    },
+    {
+      "key": "node_modules/path-key",
+      "action": "insert",
+      "version": "3.1.1",
+      "source": "block",
+      "line": 4393
+    },
+    {
+      "key": "node_modules/path-parse",
+      "action": "insert",
+      "version": "1.0.7",
+      "source": "block",
+      "line": 4403
+    },
+    {
+      "key": "node_modules/path-scurry",
+      "action": "insert",
+      "version": "1.11.1",
+      "source": "block",
+      "line": 4411
+    },
+    {
+      "key": "node_modules/path-scurry/node_modules/lru-cache",
+      "action": "insert",
+      "version": "10.4.3",
+      "source": "block",
+      "line": 4427
+    },
+    {
+      "key": "node_modules/picocolors",
+      "action": "insert",
+      "version": "1.1.1",
+      "source": "block",
+      "line": 4433
+    },
+    {
+      "key": "node_modules/picomatch",
+      "action": "insert",
+      "version": "2.3.2",
+      "source": "block",
+      "line": 4440
+    },
+    {
+      "key": "node_modules/pify",
+      "action": "insert",
+      "version": "2.3.0",
+      "source": "block",
+      "line": 4453
+    },
+    {
+      "key": "node_modules/pirates",
+      "action": "insert",
+      "version": "4.0.7",
+      "source": "block",
+      "line": 4463
+    },
+    {
+      "key": "node_modules/postcss",
+      "action": "insert",
+      "version": "8.5.15",
+      "source": "block",
+      "line": 4473
+    },
+    {
+      "key": "node_modules/postcss-import",
+      "action": "insert",
+      "version": "15.1.0",
+      "source": "block",
+      "line": 4502
+    },
+    {
+      "key": "node_modules/postcss-js",
+      "action": "insert",
+      "version": "4.1.0",
+      "source": "block",
+      "line": 4520
+    },
+    {
+      "key": "node_modules/postcss-load-config",
+      "action": "insert",
+      "version": "6.0.1",
+      "source": "block",
+      "line": 4550
+    },
+    {
+      "key": "node_modules/postcss-nested",
+      "action": "insert",
+      "version": "6.2.0",
+      "source": "block",
+      "line": 4609
+    },
+    {
+      "key": "node_modules/postcss-selector-parser",
+      "action": "insert",
+      "version": "6.1.2",
+      "source": "block",
+      "line": 4635
+    },
+    {
+      "key": "node_modules/postcss-value-parser",
+      "action": "insert",
+      "version": "4.2.0",
+      "source": "block",
+      "line": 4649
+    },
+    {
+      "key": "node_modules/prelude-ls",
+      "action": "insert",
+      "version": "1.2.1",
+      "source": "block",
+      "line": 4656
+    },
+    {
+      "key": "node_modules/punycode",
+      "action": "insert",
+      "version": "2.3.1",
+      "source": "block",
+      "line": 4666
+    },
+    {
+      "key": "node_modules/queue-microtask",
+      "action": "insert",
+      "version": "1.2.3",
+      "source": "block",
+      "line": 4676
+    },
+    {
+      "key": "node_modules/react",
+      "action": "insert",
+      "version": "18.3.1",
+      "source": "block",
+      "line": 4697
+    },
+    {
+      "key": "node_modules/react-dom",
+      "action": "insert",
+      "version": "18.3.1",
+      "source": "block",
+      "line": 4709
+    },
+    {
+      "key": "node_modules/react-refresh",
+      "action": "insert",
+      "version": "0.17.0",
+      "source": "block",
+      "line": 4722
+    },
+    {
+      "key": "node_modules/read-cache",
+      "action": "insert",
+      "version": "1.0.0",
+      "source": "block",
+      "line": 4732
+    },
+    {
+      "key": "node_modules/readdirp",
+      "action": "insert",
+      "version": "3.6.0",
+      "source": "block",
+      "line": 4742
+    },
+    {
+      "key": "node_modules/resolve",
+      "action": "insert",
+      "version": "1.22.12",
+      "source": "block",
+      "line": 4755
+    },
+    {
+      "key": "node_modules/resolve-from",
+      "action": "insert",
+      "version": "4.0.0",
+      "source": "block",
+      "line": 4777
+    },
+    {
+      "key": "node_modules/reusify",
+      "action": "insert",
+      "version": "1.1.0",
+      "source": "block",
+      "line": 4787
+    },
+    {
+      "key": "node_modules/rollup",
+      "action": "insert",
+      "version": "4.61.1",
+      "source": "block",
+      "line": 4798
+    },
+    {
+      "key": "node_modules/rolldown",
+      "action": "insert",
+      "version": "1.0.0-rc.18",
+      "source": "block",
+      "line": 4842
+    },
+    {
+      "key": "node_modules/rolldown/node_modules/@rolldown/pluginutils",
+      "action": "insert",
+      "version": "1.0.0-rc.18",
+      "source": "block",
+      "line": 4876
+    },
+    {
+      "key": "node_modules/run-parallel",
+      "action": "insert",
+      "version": "1.2.0",
+      "source": "block",
+      "line": 4883
+    },
+    {
+      "key": "node_modules/scheduler",
+      "action": "insert",
+      "version": "0.23.2",
+      "source": "block",
+      "line": 4907
+    },
+    {
+      "key": "node_modules/semver",
+      "action": "insert",
+      "version": "6.3.1",
+      "source": "block",
+      "line": 4916
+    },
+    {
+      "key": "node_modules/shebang-command",
+      "action": "insert",
+      "version": "2.0.0",
+      "source": "block",
+      "line": 4926
+    },
+    {
+      "key": "node_modules/shebang-regex",
+      "action": "insert",
+      "version": "3.0.0",
+      "source": "block",
+      "line": 4939
+    },
+    {
+      "key": "node_modules/signal-exit",
+      "action": "insert",
+      "version": "4.1.0",
+      "source": "block",
+      "line": 4949
+    },
+    {
+      "key": "node_modules/source-map-js",
+      "action": "insert",
+      "version": "1.2.1",
+      "source": "block",
+      "line": 4961
+    },
+    {
+      "key": "node_modules/string-width",
+      "action": "insert",
+      "version": "5.1.2",
+      "source": "block",
+      "line": 4971
+    },
+    {
+      "key": "node_modules/string-width-cjs",
+      "action": "insert",
+      "version": "4.2.3",
+      "source": "block",
+      "line": 4988
+    },
+    {
+      "key": "node_modules/string-width-cjs/node_modules/ansi-regex",
+      "action": "insert",
+      "version": "5.0.1",
+      "source": "block",
+      "line": 5003
+    },
+    {
+      "key": "node_modules/string-width-cjs/node_modules/emoji-regex",
+      "action": "insert",
+      "version": "8.0.0",
+      "source": "block",
+      "line": 5012
+    },
+    {
+      "key": "node_modules/string-width-cjs/node_modules/strip-ansi",
+      "action": "insert",
+      "version": "6.0.1",
+      "source": "block",
+      "line": 5018
+    },
+    {
+      "key": "node_modules/strip-ansi",
+      "action": "insert",
+      "version": "7.1.0",
+      "source": "block",
+      "line": 5030
+    },
+    {
+      "key": "node_modules/strip-ansi-cjs",
+      "action": "insert",
+      "version": "6.0.1",
+      "source": "block",
+      "line": 5045
+    },
+    {
+      "key": "node_modules/strip-ansi-cjs/node_modules/ansi-regex",
+      "action": "insert",
+      "version": "5.0.1",
+      "source": "block",
+      "line": 5058
+    },
+    {
+      "key": "node_modules/strip-json-comments",
+      "action": "insert",
+      "version": "3.1.1",
+      "source": "block",
+      "line": 5067
+    },
+    {
+      "key": "node_modules/sucrase",
+      "action": "insert",
+      "version": "3.35.1",
+      "source": "block",
+      "line": 5080
+    },
+    {
+      "key": "node_modules/supports-color",
+      "action": "insert",
+      "version": "7.2.0",
+      "source": "block",
+      "line": 5106
+    },
+    {
+      "key": "node_modules/supports-preserve-symlinks-flag",
+      "action": "insert",
+      "version": "1.0.0",
+      "source": "block",
+      "line": 5119
+    },
+    {
+      "key": "node_modules/tailwindcss",
+      "action": "insert",
+      "version": "3.4.19",
+      "source": "block",
+      "line": 5132
+    },
+    {
+      "key": "node_modules/thenify",
+      "action": "insert",
+      "version": "3.3.1",
+      "source": "block",
+      "line": 5170
+    },
+    {
+      "key": "node_modules/thenify-all",
+      "action": "insert",
+      "version": "1.6.0",
+      "source": "block",
+      "line": 5180
+    },
+    {
+      "key": "node_modules/tinyglobby",
+      "action": "insert",
+      "version": "0.2.17",
+      "source": "block",
+      "line": 5193
+    },
+    {
+      "key": "node_modules/tinyglobby/node_modules/fdir",
+      "action": "insert",
+      "version": "6.5.0",
+      "source": "block",
+      "line": 5210
+    },
+    {
+      "key": "node_modules/tinyglobby/node_modules/picomatch",
+      "action": "insert",
+      "version": "4.0.4",
+      "source": "block",
+      "line": 5228
+    },
+    {
+      "key": "node_modules/to-regex-range",
+      "action": "insert",
+      "version": "5.0.1",
+      "source": "block",
+      "line": 5241
+    },
+    {
+      "key": "node_modules/ts-api-utils",
+      "action": "insert",
+      "version": "2.5.0",
+      "source": "block",
+      "line": 5254
+    },
+    {
+      "key": "node_modules/ts-interface-checker",
+      "action": "insert",
+      "version": "0.1.13",
+      "source": "block",
+      "line": 5269
+    },
+    {
+      "key": "node_modules/tslib",
+      "action": "insert",
+      "version": "2.8.1",
+      "source": "block",
+      "line": 5277
+    },
+    {
+      "key": "node_modules/type-check",
+      "action": "insert",
+      "version": "0.4.0",
+      "source": "block",
+      "line": 5285
+    },
+    {
+      "key": "node_modules/typescript",
+      "action": "insert",
+      "version": "5.9.3",
+      "source": "block",
+      "line": 5298
+    },
+    {
+      "key": "node_modules/typescript-eslint",
+      "action": "insert",
+      "version": "8.60.1",
+      "source": "block",
+      "line": 5312
+    },
+    {
+      "key": "node_modules/update-browserslist-db",
+      "action": "insert",
+      "version": "1.2.3",
+      "source": "block",
+      "line": 5338
+    },
+    {
+      "key": "node_modules/update-browserslist-db",
+      "action": "merge-into-newer",
+      "keptVersion": "1.2.3",
+      "fromVersion": "1.1.1",
+      "addedFields": [
+        "license"
+      ],
+      "source": "block",
+      "line": 5348
+    },
+    {
+      "key": "node_modules/uri-js",
+      "action": "insert",
+      "version": "4.4.1",
+      "source": "block",
+      "line": 5379
+    },
+    {
+      "key": "node_modules/util-deprecate",
+      "action": "insert",
+      "version": "1.0.2",
+      "source": "block",
+      "line": 5389
+    },
+    {
+      "key": "node_modules/vite",
+      "action": "insert",
+      "version": "7.3.5",
+      "source": "block",
+      "line": 5396
+    },
+    {
+      "key": "node_modules/vite/node_modules/fdir",
+      "action": "insert",
+      "version": "6.5.0",
+      "source": "block",
+      "line": 5480
+    },
+    {
+      "key": "node_modules/vite/node_modules/picomatch",
+      "action": "insert",
+      "version": "4.0.4",
+      "source": "block",
+      "line": 5498
+    },
+    {
+      "key": "node_modules/which",
+      "action": "insert",
+      "version": "2.0.2",
+      "source": "block",
+      "line": 5511
+    },
+    {
+      "key": "node_modules/word-wrap",
+      "action": "insert",
+      "version": "1.2.5",
+      "source": "block",
+      "line": 5527
+    },
+    {
+      "key": "node_modules/wrap-ansi",
+      "action": "insert",
+      "version": "8.1.0",
+      "source": "block",
+      "line": 5537
+    },
+    {
+      "key": "node_modules/wrap-ansi-cjs",
+      "action": "insert",
+      "version": "7.0.0",
+      "source": "block",
+      "line": 5554
+    },
+    {
+      "key": "node_modules/wrap-ansi-cjs/node_modules/ansi-regex",
+      "action": "insert",
+      "version": "5.0.1",
+      "source": "block",
+      "line": 5572
+    },
+    {
+      "key": "node_modules/wrap-ansi-cjs/node_modules/ansi-styles",
+      "action": "insert",
+      "version": "4.3.0",
+      "source": "block",
+      "line": 5581
+    },
+    {
+      "key": "node_modules/wrap-ansi-cjs/node_modules/color-convert",
+      "action": "insert",
+      "version": "2.0.1",
+      "source": "block",
+      "line": 5596
+    },
+    {
+      "key": "node_modules/wrap-ansi-cjs/node_modules/color-name",
+      "action": "insert",
+      "version": "1.1.4",
+      "source": "block",
+      "line": 5608
+    },
+    {
+      "key": "node_modules/wrap-ansi-cjs/node_modules/emoji-regex",
+      "action": "insert",
+      "version": "8.0.0",
+      "source": "block",
+      "line": 5614
+    },
+    {
+      "key": "node_modules/wrap-ansi-cjs/node_modules/string-width",
+      "action": "insert",
+      "version": "4.2.3",
+      "source": "block",
+      "line": 5620
+    },
+    {
+      "key": "node_modules/wrap-ansi-cjs/node_modules/strip-ansi",
+      "action": "insert",
+      "version": "6.0.1",
+      "source": "block",
+      "line": 5634
+    },
+    {
+      "key": "node_modules/wrap-ansi/node_modules/ansi-styles",
+      "action": "insert",
+      "version": "6.2.1",
+      "source": "block",
+      "line": 5646
+    },
+    {
+      "key": "node_modules/yallist",
+      "action": "insert",
+      "version": "3.1.1",
+      "source": "block",
+      "line": 5658
+    },
+    {
+      "key": "node_modules/yaml",
+      "action": "insert",
+      "version": "2.9.0",
+      "source": "block",
+      "line": 5665
+    },
+    {
+      "key": "node_modules/yocto-queue",
+      "action": "insert",
+      "version": "0.1.0",
+      "source": "block",
+      "line": 5681
+    },
+    {
+      "key": "",
+      "action": "insert-root-from-reference",
+      "version": "0.1.0"
+    }
+  ],
+  "structureRepairs": [
+    {
+      "key": "node_modules/@rollup/rollup-linux-arm64-gnu",
+      "type": "restore-truncated-block",
+      "version": "4.61.1",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-arm64-musl",
+      "type": "restore-truncated-block",
+      "version": "4.61.1",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-loong64-gnu",
+      "type": "restore-truncated-block",
+      "version": "4.61.1",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-loong64-musl",
+      "type": "restore-truncated-block",
+      "version": "4.61.1",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-ppc64-gnu",
+      "type": "restore-truncated-block",
+      "version": "4.61.1",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-ppc64-musl",
+      "type": "fill-missing-fields",
+      "addedFields": [
+        "dev",
+        "license",
+        "optional",
+        "os"
+      ]
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-riscv64-gnu",
+      "type": "fill-missing-fields",
+      "addedFields": [
+        "dev",
+        "license",
+        "optional",
+        "os"
+      ]
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-riscv64-musl",
+      "type": "fill-missing-fields",
+      "addedFields": [
+        "dev",
+        "license",
+        "optional",
+        "os"
+      ]
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-s390x-gnu",
+      "type": "restore-truncated-block",
+      "version": "4.61.1",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-x64-gnu",
+      "type": "restore-truncated-block",
+      "version": "4.61.1",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/@rollup/rollup-linux-x64-musl",
+      "type": "restore-truncated-block",
+      "version": "4.61.1",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/@rollup/rollup-openharmony-arm64",
+      "type": "restore-truncated-block",
+      "version": "4.61.1",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/@rollup/rollup-win32-arm64-msvc",
+      "type": "fill-missing-fields",
+      "addedFields": [
+        "dev",
+        "license",
+        "optional",
+        "os"
+      ]
+    },
+    {
+      "key": "node_modules/@rollup/rollup-win32-ia32-msvc",
+      "type": "restore-truncated-block",
+      "version": "4.61.1",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/@rollup/rollup-win32-x64-gnu",
+      "type": "restore-truncated-block",
+      "version": "4.61.1",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/@rollup/rollup-win32-x64-msvc",
+      "type": "restore-truncated-block",
+      "version": "4.61.1",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/@typescript-eslint/parser",
+      "type": "restore-truncated-block",
+      "version": "8.60.1",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/@typescript-eslint/parser",
+      "type": "fill-missing-fields",
+      "addedFields": [
+        "license"
+      ]
+    },
+    {
+      "key": "node_modules/@typescript-eslint/scope-manager",
+      "type": "restore-truncated-block",
+      "version": "8.60.1",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/@typescript-eslint/scope-manager",
+      "type": "fill-missing-fields",
+      "addedFields": [
+        "license"
+      ]
+    },
+    {
+      "key": "node_modules/@typescript-eslint/types",
+      "type": "fill-missing-fields",
+      "addedFields": [
+        "engines",
+        "funding"
+      ]
+    },
+    {
+      "key": "node_modules/@typescript-eslint/types",
+      "type": "fill-missing-fields",
+      "addedFields": [
+        "license"
+      ]
+    },
+    {
+      "key": "node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch",
+      "type": "restore-truncated-block",
+      "version": "10.2.5",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion",
+      "type": "fill-missing-fields",
+      "addedFields": [
+        "engines"
+      ]
+    },
+    {
+      "key": "node_modules/@typescript-eslint/visitor-keys",
+      "type": "restore-truncated-block",
+      "version": "8.60.1",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/@typescript-eslint/visitor-keys",
+      "type": "fill-missing-fields",
+      "addedFields": [
+        "license"
+      ]
+    },
+    {
+      "key": "node_modules/autoprefixer",
+      "type": "restore-truncated-block",
+      "version": "10.5.0",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/balanced-match",
+      "type": "fill-missing-fields",
+      "addedFields": [
+        "license"
+      ]
+    },
+    {
+      "key": "node_modules/deep-is",
+      "type": "fill-missing-fields",
+      "addedFields": [
+        "license"
+      ]
+    },
+    {
+      "key": "node_modules/esbuild",
+      "type": "restore-truncated-block",
+      "version": "0.27.7",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/fraction.js",
+      "type": "restore-truncated-block",
+      "version": "5.3.4",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/fraction.js",
+      "type": "fill-missing-fields",
+      "addedFields": [
+        "license"
+      ]
+    },
+    {
+      "key": "node_modules/hasown",
+      "type": "restore-truncated-block",
+      "version": "2.0.4",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/globals",
+      "type": "fill-missing-fields",
+      "addedFields": [
+        "license"
+      ]
+    },
+    {
+      "key": "node_modules/hasown",
+      "type": "fill-missing-fields",
+      "addedFields": [
+        "license"
+      ]
+    },
+    {
+      "key": "node_modules/jiti",
+      "type": "fill-missing-fields",
+      "addedFields": [
+        "bin"
+      ]
+    },
+    {
+      "key": "node_modules/jiti",
+      "type": "fill-missing-fields",
+      "addedFields": [
+        "license"
+      ]
+    },
+    {
+      "key": "node_modules/js-yaml",
+      "type": "fill-missing-fields",
+      "addedFields": [
+        "license",
+        "dependencies",
+        "bin"
+      ]
+    },
+    {
+      "key": "node_modules/js-yaml",
+      "type": "fill-missing-fields",
+      "addedFields": [
+        "funding"
+      ]
+    },
+    {
+      "key": "node_modules/node-releases",
+      "type": "restore-truncated-block",
+      "version": "2.0.47",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/node-releases",
+      "type": "fill-missing-fields",
+      "addedFields": [
+        "license",
+        "engines"
+      ]
+    },
+    {
+      "key": "node_modules/path-parse",
+      "type": "restore-truncated-block",
+      "version": "1.0.7",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/postcss-load-config",
+      "type": "restore-truncated-block",
+      "version": "6.0.1",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/rollup",
+      "type": "restore-truncated-block",
+      "version": "4.61.1",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/ts-interface-checker",
+      "type": "restore-truncated-block",
+      "version": "0.1.13",
+      "note": "même version/integrity — champs structurels complétés"
+    },
+    {
+      "key": "node_modules/update-browserslist-db",
+      "type": "fill-missing-fields",
+      "addedFields": [
+        "dev",
+        "funding",
+        "dependencies",
+        "bin",
+        "peerDependencies"
+      ]
+    },
+    {
+      "key": "node_modules/vite",
+      "type": "restore-truncated-block",
+      "version": "7.3.5",
+      "note": "même version/integrity — champs structurels complétés"
+    }
+  ],
+  "discarded": [
+    {
+      "key": "node_modules/@rolldown/pluginutils",
+      "version": "1.0.0-beta.27",
+      "reason": "identical",
+      "source": "block",
+      "line": 1688
+    },
+    {
+      "key": "node_modules/@typescript-eslint/parser",
+      "version": "8.8.1",
+      "reason": "older",
+      "source": "block",
+      "line": 2084
+    },
+    {
+      "key": "node_modules/@typescript-eslint/scope-manager",
+      "version": "8.8.1",
+      "reason": "older",
+      "source": "block",
+      "line": 2147
+    },
+    {
+      "key": "node_modules/@typescript-eslint/types",
+      "version": "8.8.1",
+      "reason": "older",
+      "source": "block",
+      "line": 2220
+    },
+    {
+      "key": "node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion",
+      "version": "2.1.0",
+      "reason": "older",
+      "source": "block",
+      "line": 2305
+    },
+    {
+      "key": "node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch",
+      "version": "9.0.9",
+      "reason": "older",
+      "source": "block",
+      "line": 2315
+    },
+    {
+      "key": "node_modules/@typescript-eslint/visitor-keys",
+      "version": "8.8.1",
+      "reason": "older",
+      "source": "block",
+      "line": 2380
+    },
+    {
+      "key": "node_modules/balanced-match",
+      "version": "1.0.2",
+      "reason": "identical",
+      "source": "block",
+      "line": 2600
+    },
+    {
+      "key": "node_modules/electron-to-chromium",
+      "version": "1.5.33",
+      "reason": "older",
+      "source": "block",
+      "line": 2966
+    },
+    {
+      "key": "node_modules/fraction.js",
+      "version": "4.3.7",
+      "reason": "older",
+      "source": "block",
+      "line": 3408
+    },
+    {
+      "key": "node_modules/globals",
+      "version": "15.11.0",
+      "reason": "older",
+      "source": "block",
+      "line": 3548
+    },
+    {
+      "key": "node_modules/hasown",
+      "version": "2.0.2",
+      "reason": "older",
+      "source": "block",
+      "line": 3566
+    },
+    {
+      "key": "node_modules/jiti",
+      "version": "1.21.6",
+      "reason": "older",
+      "source": "block",
+      "line": 3716
+    },
+    {
+      "key": "node_modules/js-yaml",
+      "version": "4.1.1",
+      "reason": "older",
+      "source": "block",
+      "line": 3748
+    },
+    {
+      "key": "node_modules/node-releases",
+      "version": "2.0.18",
+      "reason": "older",
+      "source": "block",
+      "line": 4269
+    }
+  ],
+  "unparsed": [
+    {
+      "key": "node_modules/baseline-browser-mapping",
+      "source": "block",
+      "line": 2584
+    }
+  ]
+}
