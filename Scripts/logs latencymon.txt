@@ -1,0 +1,357 @@
+_________________________________________________________________________________________________________
+CONCLUSION
+_________________________________________________________________________________________________________
+Your system appears to be having trouble handling real-time audio and other tasks. You are likely to experience buffer underruns appearing as drop outs, clicks or pops. One or more DPC routines that belong to a driver running in your system appear to be executing for too long. One problem may be related to power management, disable CPU throttling settings in Control Panel and BIOS setup. Check for BIOS updates. 
+LatencyMon has been analyzing your system for  0:02:26  (h:mm:ss) on all processors.
+
+
+_________________________________________________________________________________________________________
+SYSTEM INFORMATION
+_________________________________________________________________________________________________________
+Computer name:                                        DINGUERIE
+OS version:                                           Windows 11, 10.0, version 2009, build: 26200 (x64)
+Hardware:                                             ROG Strix G18 G814JIR_G814JIR, ASUSTeK COMPUTER INC.
+BIOS:                                                 G814JIR.322
+CPU:                                                  GenuineIntel Intel(R) Core(TM) i9-14900HX
+Logical processors:                                   32
+Processor groups:                                     1
+Processor group size:                                 32
+RAM:                                                  32413 MB total
+
+
+_________________________________________________________________________________________________________
+CPU SPEED
+_________________________________________________________________________________________________________
+Reported CPU speed (WMI):                             220 MHz
+Reported CPU speed (registry):                        2419 MHz
+
+Note: reported execution times may be calculated based on a fixed reported CPU speed. Disable variable speed settings like Intel Speed Step and AMD Cool N Quiet in the BIOS setup for more accurate results.
+
+
+_________________________________________________________________________________________________________
+MEASURED INTERRUPT TO USER PROCESS LATENCIES
+_________________________________________________________________________________________________________
+The interrupt to process latency reflects the measured interval that a usermode process needed to respond to a hardware request from the moment the interrupt service routine started execution. This includes the scheduling and execution of a DPC routine, the signaling of an event and the waking up of a usermode thread from an idle wait state in response to that event.
+
+Highest measured interrupt to process latency (µs):   4584,80
+Average measured interrupt to process latency (µs):   23,744380
+
+Highest measured interrupt to DPC latency (µs):       4486,10
+Average measured interrupt to DPC latency (µs):       3,615065
+
+
+_________________________________________________________________________________________________________
+ REPORTED ISRs
+_________________________________________________________________________________________________________
+Interrupt service routines are routines installed by the OS and device drivers that execute in response to a hardware interrupt signal.
+
+Highest ISR routine execution time (µs):              693,276561
+Driver with highest ISR routine execution time:       Wdf01000.sys - Runtime de l’infrastructure de pilotes en mode noyau, Microsoft Corporation
+
+Highest reported total ISR routine time (%):          0,000101
+Driver with highest ISR total time:                   Wdf01000.sys - Runtime de l’infrastructure de pilotes en mode noyau, Microsoft Corporation
+
+Total time spent in ISRs (%)                          0,000133
+
+ISR count (execution time <250 µs):                   751
+ISR count (execution time 250-500 µs):                0
+ISR count (execution time 500-1000 µs):               3
+ISR count (execution time 1000-2000 µs):              0
+ISR count (execution time 2000-4000 µs):              0
+ISR count (execution time >=4000 µs):                 0
+
+
+_________________________________________________________________________________________________________
+REPORTED DPCs
+_________________________________________________________________________________________________________
+DPC routines are part of the interrupt servicing dispatch mechanism and disable the possibility for a process to utilize the CPU while it is interrupted until the DPC has finished execution.
+
+Highest DPC routine execution time (µs):              5272,858619
+Driver with highest DPC routine execution time:       Wdf01000.sys - Runtime de l’infrastructure de pilotes en mode noyau, Microsoft Corporation
+
+Highest reported total DPC routine time (%):          0,016379
+Driver with highest DPC total execution time:         ntoskrnl.exe - NT Kernel & System, Microsoft Corporation
+
+Total time spent in DPCs (%)                          0,028381
+
+DPC count (execution time <250 µs):                   36666
+DPC count (execution time 250-500 µs):                0
+DPC count (execution time 500-10000 µs):              868
+DPC count (execution time 1000-2000 µs):              0
+DPC count (execution time 2000-4000 µs):              1
+DPC count (execution time >=4000 µs):                 1
+
+
+_________________________________________________________________________________________________________
+ REPORTED HARD PAGEFAULTS
+_________________________________________________________________________________________________________
+Hard pagefaults are events that get triggered by making use of virtual memory that is not resident in RAM but backed by a memory mapped file on disk. The process of resolving the hard pagefault requires reading in the memory from disk while the process is interrupted and blocked from execution.
+
+NOTE: some processes were hit by hard pagefaults. If these were programs producing audio, they are likely to interrupt the audio stream resulting in dropouts, clicks and pops. Check the Processes tab to see which programs were hit.
+
+Process with highest pagefault count:                 msmpeng.exe
+
+Total number of hard pagefaults                       411
+Hard pagefault count of hardest hit process:          190
+Number of processes hit:                              12
+
+
+_________________________________________________________________________________________________________
+ PER CPU DATA
+_________________________________________________________________________________________________________
+CPU 0 Interrupt cycle time (s):                       4,776232
+CPU 0 ISR highest execution time (µs):                294,290203
+CPU 0 ISR total execution time (s):                   0,001843
+CPU 0 ISR count:                                      179
+CPU 0 DPC highest execution time (µs):                726,255477
+CPU 0 DPC total execution time (s):                   0,102458
+CPU 0 DPC count:                                      7834
+_________________________________________________________________________________________________________
+CPU 1 Interrupt cycle time (s):                       3,289558
+CPU 1 ISR highest execution time (µs):                0,0
+CPU 1 ISR total execution time (s):                   0,0
+CPU 1 ISR count:                                      0
+CPU 1 DPC highest execution time (µs):                40,280695
+CPU 1 DPC total execution time (s):                   0,000254
+CPU 1 DPC count:                                      45
+_________________________________________________________________________________________________________
+CPU 2 Interrupt cycle time (s):                       3,722389
+CPU 2 ISR highest execution time (µs):                0,0
+CPU 2 ISR total execution time (s):                   0,0
+CPU 2 ISR count:                                      0
+CPU 2 DPC highest execution time (µs):                265,72840
+CPU 2 DPC total execution time (s):                   0,006718
+CPU 2 DPC count:                                      3051
+_________________________________________________________________________________________________________
+CPU 3 Interrupt cycle time (s):                       3,743613
+CPU 3 ISR highest execution time (µs):                7,565523
+CPU 3 ISR total execution time (s):                   0,000096
+CPU 3 ISR count:                                      24
+CPU 3 DPC highest execution time (µs):                722,680860
+CPU 3 DPC total execution time (s):                   0,024122
+CPU 3 DPC count:                                      931
+_________________________________________________________________________________________________________
+CPU 4 Interrupt cycle time (s):                       4,080724
+CPU 4 ISR highest execution time (µs):                185,365440
+CPU 4 ISR total execution time (s):                   0,000304
+CPU 4 ISR count:                                      41
+CPU 4 DPC highest execution time (µs):                701,809839
+CPU 4 DPC total execution time (s):                   0,028778
+CPU 4 DPC count:                                      1231
+_________________________________________________________________________________________________________
+CPU 5 Interrupt cycle time (s):                       3,495628
+CPU 5 ISR highest execution time (µs):                0,0
+CPU 5 ISR total execution time (s):                   0,0
+CPU 5 ISR count:                                      0
+CPU 5 DPC highest execution time (µs):                176,568417
+CPU 5 DPC total execution time (s):                   0,000995
+CPU 5 DPC count:                                      1038
+_________________________________________________________________________________________________________
+CPU 6 Interrupt cycle time (s):                       3,222825
+CPU 6 ISR highest execution time (µs):                0,0
+CPU 6 ISR total execution time (s):                   0,0
+CPU 6 ISR count:                                      0
+CPU 6 DPC highest execution time (µs):                57,083506
+CPU 6 DPC total execution time (s):                   0,000539
+CPU 6 DPC count:                                      62
+_________________________________________________________________________________________________________
+CPU 7 Interrupt cycle time (s):                       3,288908
+CPU 7 ISR highest execution time (µs):                0,0
+CPU 7 ISR total execution time (s):                   0,0
+CPU 7 ISR count:                                      0
+CPU 7 DPC highest execution time (µs):                0,0
+CPU 7 DPC total execution time (s):                   0,0
+CPU 7 DPC count:                                      0
+_________________________________________________________________________________________________________
+CPU 8 Interrupt cycle time (s):                       6,209332
+CPU 8 ISR highest execution time (µs):                693,276561
+CPU 8 ISR total execution time (s):                   0,002598
+CPU 8 ISR count:                                      432
+CPU 8 DPC highest execution time (µs):                793,350971
+CPU 8 DPC total execution time (s):                   0,299306
+CPU 8 DPC count:                                      6945
+_________________________________________________________________________________________________________
+CPU 9 Interrupt cycle time (s):                       6,085370
+CPU 9 ISR highest execution time (µs):                44,290616
+CPU 9 ISR total execution time (s):                   0,000274
+CPU 9 ISR count:                                      12
+CPU 9 DPC highest execution time (µs):                2750,010748
+CPU 9 DPC total execution time (s):                   0,023458
+CPU 9 DPC count:                                      545
+_________________________________________________________________________________________________________
+CPU 10 Interrupt cycle time (s):                       10,435884
+CPU 10 ISR highest execution time (µs):                50,121538
+CPU 10 ISR total execution time (s):                   0,000804
+CPU 10 ISR count:                                      40
+CPU 10 DPC highest execution time (µs):                5272,858619
+CPU 10 DPC total execution time (s):                   0,663459
+CPU 10 DPC count:                                      12058
+_________________________________________________________________________________________________________
+CPU 11 Interrupt cycle time (s):                       18,723352
+CPU 11 ISR highest execution time (µs):                0,0
+CPU 11 ISR total execution time (s):                   0,0
+CPU 11 ISR count:                                      0
+CPU 11 DPC highest execution time (µs):                605,548987
+CPU 11 DPC total execution time (s):                   0,161779
+CPU 11 DPC count:                                      2938
+_________________________________________________________________________________________________________
+CPU 12 Interrupt cycle time (s):                       2,830779
+CPU 12 ISR highest execution time (µs):                190,525837
+CPU 12 ISR total execution time (s):                   0,000291
+CPU 12 ISR count:                                      26
+CPU 12 DPC highest execution time (µs):                575,036379
+CPU 12 DPC total execution time (s):                   0,006266
+CPU 12 DPC count:                                      183
+_________________________________________________________________________________________________________
+CPU 13 Interrupt cycle time (s):                       2,626405
+CPU 13 ISR highest execution time (µs):                0,0
+CPU 13 ISR total execution time (s):                   0,0
+CPU 13 ISR count:                                      0
+CPU 13 DPC highest execution time (µs):                0,0
+CPU 13 DPC total execution time (s):                   0,0
+CPU 13 DPC count:                                      0
+_________________________________________________________________________________________________________
+CPU 14 Interrupt cycle time (s):                       2,508131
+CPU 14 ISR highest execution time (µs):                0,0
+CPU 14 ISR total execution time (s):                   0,0
+CPU 14 ISR count:                                      0
+CPU 14 DPC highest execution time (µs):                67,607276
+CPU 14 DPC total execution time (s):                   0,001405
+CPU 14 DPC count:                                      166
+_________________________________________________________________________________________________________
+CPU 15 Interrupt cycle time (s):                       2,460520
+CPU 15 ISR highest execution time (µs):                0,0
+CPU 15 ISR total execution time (s):                   0,0
+CPU 15 ISR count:                                      0
+CPU 15 DPC highest execution time (µs):                0,0
+CPU 15 DPC total execution time (s):                   0,0
+CPU 15 DPC count:                                      0
+_________________________________________________________________________________________________________
+CPU 16 Interrupt cycle time (s):                       1,232642
+CPU 16 ISR highest execution time (µs):                0,0
+CPU 16 ISR total execution time (s):                   0,0
+CPU 16 ISR count:                                      0
+CPU 16 DPC highest execution time (µs):                232,091773
+CPU 16 DPC total execution time (s):                   0,000632
+CPU 16 DPC count:                                      36
+_________________________________________________________________________________________________________
+CPU 17 Interrupt cycle time (s):                       1,038067
+CPU 17 ISR highest execution time (µs):                0,0
+CPU 17 ISR total execution time (s):                   0,0
+CPU 17 ISR count:                                      0
+CPU 17 DPC highest execution time (µs):                0,0
+CPU 17 DPC total execution time (s):                   0,0
+CPU 17 DPC count:                                      0
+_________________________________________________________________________________________________________
+CPU 18 Interrupt cycle time (s):                       1,002258
+CPU 18 ISR highest execution time (µs):                0,0
+CPU 18 ISR total execution time (s):                   0,0
+CPU 18 ISR count:                                      0
+CPU 18 DPC highest execution time (µs):                0,0
+CPU 18 DPC total execution time (s):                   0,0
+CPU 18 DPC count:                                      0
+_________________________________________________________________________________________________________
+CPU 19 Interrupt cycle time (s):                       0,912079
+CPU 19 ISR highest execution time (µs):                0,0
+CPU 19 ISR total execution time (s):                   0,0
+CPU 19 ISR count:                                      0
+CPU 19 DPC highest execution time (µs):                0,0
+CPU 19 DPC total execution time (s):                   0,0
+CPU 19 DPC count:                                      0
+_________________________________________________________________________________________________________
+CPU 20 Interrupt cycle time (s):                       1,141075
+CPU 20 ISR highest execution time (µs):                0,0
+CPU 20 ISR total execution time (s):                   0,0
+CPU 20 ISR count:                                      0
+CPU 20 DPC highest execution time (µs):                54,902852
+CPU 20 DPC total execution time (s):                   0,000112
+CPU 20 DPC count:                                      9
+_________________________________________________________________________________________________________
+CPU 21 Interrupt cycle time (s):                       1,085463
+CPU 21 ISR highest execution time (µs):                0,0
+CPU 21 ISR total execution time (s):                   0,0
+CPU 21 ISR count:                                      0
+CPU 21 DPC highest execution time (µs):                48,071931
+CPU 21 DPC total execution time (s):                   0,000306
+CPU 21 DPC count:                                      38
+_________________________________________________________________________________________________________
+CPU 22 Interrupt cycle time (s):                       1,053294
+CPU 22 ISR highest execution time (µs):                0,0
+CPU 22 ISR total execution time (s):                   0,0
+CPU 22 ISR count:                                      0
+CPU 22 DPC highest execution time (µs):                225,391484
+CPU 22 DPC total execution time (s):                   0,001039
+CPU 22 DPC count:                                      82
+_________________________________________________________________________________________________________
+CPU 23 Interrupt cycle time (s):                       1,030209
+CPU 23 ISR highest execution time (µs):                0,0
+CPU 23 ISR total execution time (s):                   0,0
+CPU 23 ISR count:                                      0
+CPU 23 DPC highest execution time (µs):                66,441918
+CPU 23 DPC total execution time (s):                   0,000229
+CPU 23 DPC count:                                      20
+_________________________________________________________________________________________________________
+CPU 24 Interrupt cycle time (s):                       1,213058
+CPU 24 ISR highest execution time (µs):                0,0
+CPU 24 ISR total execution time (s):                   0,0
+CPU 24 ISR count:                                      0
+CPU 24 DPC highest execution time (µs):                194,199669
+CPU 24 DPC total execution time (s):                   0,001655
+CPU 24 DPC count:                                      122
+_________________________________________________________________________________________________________
+CPU 25 Interrupt cycle time (s):                       1,135771
+CPU 25 ISR highest execution time (µs):                0,0
+CPU 25 ISR total execution time (s):                   0,0
+CPU 25 ISR count:                                      0
+CPU 25 DPC highest execution time (µs):                262,365440
+CPU 25 DPC total execution time (s):                   0,000663
+CPU 25 DPC count:                                      44
+_________________________________________________________________________________________________________
+CPU 26 Interrupt cycle time (s):                       1,001508
+CPU 26 ISR highest execution time (µs):                0,0
+CPU 26 ISR total execution time (s):                   0,0
+CPU 26 ISR count:                                      0
+CPU 26 DPC highest execution time (µs):                45,042993
+CPU 26 DPC total execution time (s):                   0,000102
+CPU 26 DPC count:                                      8
+_________________________________________________________________________________________________________
+CPU 27 Interrupt cycle time (s):                       0,933145
+CPU 27 ISR highest execution time (µs):                0,0
+CPU 27 ISR total execution time (s):                   0,0
+CPU 27 ISR count:                                      0
+CPU 27 DPC highest execution time (µs):                0,0
+CPU 27 DPC total execution time (s):                   0,0
+CPU 27 DPC count:                                      0
+_________________________________________________________________________________________________________
+CPU 28 Interrupt cycle time (s):                       1,227726
+CPU 28 ISR highest execution time (µs):                0,0
+CPU 28 ISR total execution time (s):                   0,0
+CPU 28 ISR count:                                      0
+CPU 28 DPC highest execution time (µs):                292,025217
+CPU 28 DPC total execution time (s):                   0,001786
+CPU 28 DPC count:                                      108
+_________________________________________________________________________________________________________
+CPU 29 Interrupt cycle time (s):                       1,008894
+CPU 29 ISR highest execution time (µs):                0,0
+CPU 29 ISR total execution time (s):                   0,0
+CPU 29 ISR count:                                      0
+CPU 29 DPC highest execution time (µs):                0,0
+CPU 29 DPC total execution time (s):                   0,0
+CPU 29 DPC count:                                      0
+_________________________________________________________________________________________________________
+CPU 30 Interrupt cycle time (s):                       0,928235
+CPU 30 ISR highest execution time (µs):                0,0
+CPU 30 ISR total execution time (s):                   0,0
+CPU 30 ISR count:                                      0
+CPU 30 DPC highest execution time (µs):                62,620091
+CPU 30 DPC total execution time (s):                   0,000084
+CPU 30 DPC count:                                      6
+_________________________________________________________________________________________________________
+CPU 31 Interrupt cycle time (s):                       0,914176
+CPU 31 ISR highest execution time (µs):                0,0
+CPU 31 ISR total execution time (s):                   0,0
+CPU 31 ISR count:                                      0
+CPU 31 DPC highest execution time (µs):                235,095081
+CPU 31 DPC total execution time (s):                   0,000949
+CPU 31 DPC count:                                      36
+_________________________________________________________________________________________________________

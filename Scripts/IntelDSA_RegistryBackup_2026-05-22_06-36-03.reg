@@ -1,0 +1,3 @@
+Windows Registry Editor Version 5.00
+[HKEY_LOCAL_MACHINE\\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Run]
+"Intel® Graphics Software"="\"C:\Program Files\Intel\Intel Graphics Software\IntelGraphicsSoftware.exe\" -s"
