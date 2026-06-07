@@ -232,19 +232,14 @@ for workflow_id in "${!WORKFLOW_RUNS[@]}"; do
         STATES_ARRAY=("${FILTER_STATUS[@]}")
     fi
     
-    # [CORRECTION 5 — DECLARE -A] Le tableau associatif était déclaré à l'intérieur de la
-    #   boucle d'états, ce qui peut provoquer des redéclarations surprenantes (notamment
-    #   sous Bash < 5 ou après un 'unset'). Déclaration déplacée ici, avant la boucle, avec
-    #   KEEP_IDS=() pour réinitialiser proprement à chaque itération d'état.
-    # [FIX 5 — DECLARE -A] The associative array was declared inside the status loop, which
-    #   can cause surprising re-declaration behavior (especially on Bash < 5 or after 'unset').
-    #   Declaration moved here, before the loop, with KEEP_IDS=() to cleanly reset on each
-    #   status iteration.
-    declare -A KEEP_IDS
-    
     # Pour chaque état, garder les KEEP_OLDEST plus anciens et KEEP_NEWEST plus récents
     # For each status, keep the KEEP_OLDEST oldest and KEEP_NEWEST most recent runs
     for STATE in "${STATES_ARRAY[@]}"; do
+        # Réinitialiser explicitement KEEP_IDS comme tableau associatif à chaque itération.
+        # Explicitly reinitialize KEEP_IDS as an associative array on each iteration.
+        unset KEEP_IDS
+        declare -A KEEP_IDS
+
         # [CORRECTION 6 — MAPFILE] mapfile peut insérer un élément vide sur la dernière
         #   ligne si STATES se termine par un saut de ligne. On l'ignore explicitement.
         # [FIX 6 — MAPFILE] mapfile may insert an empty element on the last line if STATES
