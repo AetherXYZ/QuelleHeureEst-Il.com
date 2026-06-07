@@ -57,6 +57,15 @@
 #   Cause: 'echo ... | while read' runs the while in a subshell; any DELETED_COUNT
 #   modification was lost on loop exit (value = 0).
 #   Reference: ShellCheck SC2031, BashFAQ/024, bash Cookbook 19.8.
+# [CORRECTION 8 — ARITHMETIC set -e] '((DELETED_COUNT++))' (post-increment) → '+= 1' (fusion)
+#   Cause : post-increment renvoie l'ancienne valeur (0 au premier appel) → exit code 1
+#   → set -e tue le script dès la première suppression ou simulation.
+#   Fix : '((DELETED_COUNT += 1))' — expression vaut la nouvelle valeur (≥1), exit code 0.
+#   Référence : alexwlchan.net/notes/2024/errexit-and-arithmetic-expressions, bash pitfalls.
+#   Cause: post-increment returns old value (0 on first call) → exit code 1
+#   → set -e kills the script on the very first deletion or dry-run count.
+#   Fix: '((DELETED_COUNT += 1))' — expression yields new value (≥1), exit code 0.
+#   Reference: alexwlchan.net/notes/2024/errexit-and-arithmetic-expressions, bash pitfalls.
 # =========================================================================================================
 
 set -euo pipefail
@@ -180,7 +189,17 @@ process_run() {
 
     if [[ "$DRY_RUN" == true ]]; then
         echo "      🔍 [DRY RUN] Serait supprimé : run $run_id ($reason)"
-        ((DELETED_COUNT++))
+        # [CORRECTION 8 — ARITHMETIC set -e] '((DELETED_COUNT++))' retourne exit code 1
+        #   quand DELETED_COUNT vaut 0 (post-incrément renvoie l'ancienne valeur : 0 = faux).
+        #   Avec set -e, ça tue le script dès la première itération. Fix : '+= 1' dont
+        #   l'expression vaut la NOUVELLE valeur (≥1 dès le début), exit code toujours 0.
+        #   Refs : bash pitfalls, alexwlchan.net/notes/2024/errexit-and-arithmetic-expressions
+        # [FIX 8 — ARITHMETIC set -e] '((DELETED_COUNT++))' returns exit code 1 when
+        #   DELETED_COUNT is 0 (post-increment yields old value: 0 = false).
+        #   With set -e, this kills the script on the very first iteration. Fix: '+= 1'
+        #   whose expression value is the NEW value (≥1 immediately), exit code always 0.
+        #   Refs: bash pitfalls, alexwlchan.net/notes/2024/errexit-and-arithmetic-expressions
+        ((DELETED_COUNT += 1))
     else
         echo "      🗑️ Suppression du run $run_id ($reason)"
         # [CORRECTION 4 — SUPPRESSION] 'gh run delete --yes' n'existe pas (--yes n'est pas
