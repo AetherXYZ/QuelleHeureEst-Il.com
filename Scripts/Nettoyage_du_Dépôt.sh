@@ -82,6 +82,21 @@
 #   Fix: page-by-page loop without --paginate, accumulation in a temp file (avoids O(N)
 #   jq forks), counting via 'jq length' (reliable, ≠ wc -l removed in FIX 2), single
 #   slurp at end of function. Compatible with Windows / Linux / macOS.
+# [CORRECTION 10 — CRLF Git Bash]  \r parasite dans les IDs extraits par jq -r sur Windows
+#   Cause : sur Git Bash / MSYS2 Windows, 'jq -r' peut émettre des fins de ligne \r\n au
+#   lieu de \n. '$()' strip le \n final mais PAS le \r → l'ID devient "12345\r" → la clé
+#   dans KEEP_IDS est "12345\r" → l'URL de l'API vaut '.../runs/12345\r' (invalide) →
+#   l'appel gh api -X DELETE échoue silencieusement (masqué par > /dev/null 2>&1).
+#   Fix racine : '| tr -d '\r'' ajouté sur TOUTES les extractions d'ID (les deux boucles
+#   KEEP_IDS + la boucle de suppression), et 'for run_id in $()' remplacé par
+#   'while IFS= read -r' + process substitution (plus robuste, évite le word splitting).
+#   Cause: on Git Bash / MSYS2 Windows, 'jq -r' may emit \r\n line endings instead of \n.
+#   '$()' strips the trailing \n but NOT \r → ID becomes "12345\r" → KEEP_IDS key is
+#   "12345\r" → API URL becomes '.../runs/12345\r' (invalid) → gh api -X DELETE fails
+#   silently (hidden by > /dev/null 2>&1).
+#   Root fix: '| tr -d '\r'' added on ALL ID extractions (both KEEP_IDS loops + deletion
+#   loop), and 'for run_id in $()' replaced with 'while IFS= read -r' + process
+#   substitution (more robust, avoids word splitting).
 # =========================================================================================================
 
 set -euo pipefail
@@ -92,12 +107,12 @@ REPO="QuelleHeureEst-Il.com"
 
 # Nombre de runs les plus anciens et les plus récents à conserver (par état et par workflow)
 # Number of oldest and newest runs to keep (per status and per workflow)
-KEEP_OLDEST=3
-KEEP_NEWEST=3
+KEEP_OLDEST=10
+KEEP_NEWEST=30
 
 # Mode dry-run : true = affiche uniquement, false = supprime réellement
 # Dry-run mode: true = display only, false = actually delete
-DRY_RUN=true                  # Passe à true pour tester sans supprimer, Passe à false pour supprimer réellement. /  ENG//  Set to false to actually delete.
+DRY_RUN=false                  # Passe à true pour tester sans supprimer, Passe à false pour supprimer réellement. /  ENG//  Set to false to actually delete.
 
 # États à traiter (laisser vide pour tous les états)
 # Statuses to process (leave empty for all statuses)
@@ -430,25 +445,42 @@ while read -r group; do
         # Run IDs to keep: the KEEP_OLDEST first and KEEP_NEWEST last
 
         # Ajouter les plus anciens / Add the oldest
+        # [CORRECTION 10 — CRLF] | tr -d '\r' : strip le \r éventuel émis par jq -r sur Git Bash.
+        # [FIX 10 — CRLF] | tr -d '\r' : strip the potential \r emitted by jq -r on Git Bash.
         for ((i=0; i<KEEP_OLDEST && i<COUNT; i++)); do
-            id=$(echo "$SORTED" | jq -r ".[$i].id")
+            id=$(echo "$SORTED" | jq -r ".[$i].id" | tr -d '\r')
             KEEP_IDS["$id"]=1
         done
 
         # Ajouter les plus récents (en partant de la fin) / Add the most recent (from the end)
+        # [CORRECTION 10 — CRLF] | tr -d '\r' : idem, même source jq -r, même risque.
+        # [FIX 10 — CRLF] | tr -d '\r' : same source jq -r, same risk.
         for ((i=0; i<KEEP_NEWEST && i<COUNT; i++)); do
             idx=$((COUNT - 1 - i))
-            id=$(echo "$SORTED" | jq -r ".[$idx].id")
+            id=$(echo "$SORTED" | jq -r ".[$idx].id" | tr -d '\r')
             KEEP_IDS["$id"]=1
         done
 
         # Parcourir tous les runs de cet état et supprimer ceux qui ne sont pas dans KEEP_IDS
         # Iterate all runs for this status and delete those not in KEEP_IDS
-        for run_id in $(echo "$RUNS_STATE" | jq -r '.[].id'); do
+        #
+        # [CORRECTION 10 — CRLF] 'for run_id in $(jq -r ...)' remplacé par
+        #   'while IFS= read -r ... < <(jq -r ... | tr -d '\r')' pour deux raisons :
+        #   1. tr -d '\r' supprime le \r parasite émis par jq -r sur Git Bash Windows.
+        #   2. 'while read' + process substitution est plus robuste que 'for ... in $()' :
+        #      pas de word splitting sur les espaces, pas de glob expansion, gère les IDs
+        #      contenant des caractères spéciaux (même si improbable ici).
+        # [FIX 10 — CRLF] 'for run_id in $(jq -r ...)' replaced with
+        #   'while IFS= read -r ... < <(jq -r ... | tr -d '\r')' for two reasons:
+        #   1. tr -d '\r' removes the spurious \r emitted by jq -r on Git Bash Windows.
+        #   2. 'while read' + process substitution is more robust than 'for ... in $()':
+        #      no word splitting on spaces, no glob expansion, handles IDs with special
+        #      characters (unlikely here but correct practice).
+        while IFS= read -r run_id; do
             if [[ -z "${KEEP_IDS[$run_id]:-}" ]]; then
                 process_run "$run_id" "état=$STATE, workflow $WORKFLOW_NAME, ni parmi les $KEEP_OLDEST plus vieux ni les $KEEP_NEWEST plus récents"
             fi
-        done
+        done < <(echo "$RUNS_STATE" | jq -r '.[].id' | tr -d '\r')
     done
 
     # Nettoyer le tableau associatif après chaque workflow
