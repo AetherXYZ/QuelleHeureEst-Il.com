@@ -1,0 +1,36 @@
+﻿# Définit le comportement par défaut pour tous les fichiers texte
+* text=auto
+
+# Forcer l'utilisation de LF dans le dépôt pour certains types de fichiers
+*.txt text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.md text eol=lf
+*.py text eol=lf
+*.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.xml text eol=lf
+*.sql text eol=lf
+
+# Pour les fichiers qui doivent absolument rester en CRLF (fichiers batch Windows)
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Fichiers binaires (ne pas modifier les fins de ligne)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.zip binary
+*.tar.gz binary
+*.exe binary
+*.dll binary
+*.so binary
+*.dylib binary
+*.pdf binary
+*.docx binary
