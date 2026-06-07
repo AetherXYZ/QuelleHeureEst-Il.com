@@ -94,7 +94,7 @@ foreach ($proc in $wuProcesses) {
             if ($LASTEXITCODE -eq 0) {
                 Write-Host "  [OK] $proc arrete via taskkill." -ForegroundColor Green
             } else {
-                Write-Host "  [!!] Impossible d arret $proc (processus protege, on continue) : $_" -ForegroundColor DarkYellow
+                Write-Host "  [!!] Impossible d'arrêt $proc (processus protégé, on continue) : $_" -ForegroundColor DarkYellow
             }
         }
     } else {
