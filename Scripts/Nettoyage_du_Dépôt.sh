@@ -183,7 +183,7 @@ process_run() {
 # =================================================
 
 # Récupérer TOUS les runs du dépôt (sans passer par la liste des workflows)
-echo "🔍 Récupération de TOUTES les runs du dépôt (y compris workflows supprimés)..."
+echo "🔍 Récupération de TOUS les runs du dépôt (y compris workflows supprimés)..."
 ALL_RUNS=$(get_all_runs)
 TOTAL_RUNS=$(echo "$ALL_RUNS" | jq length)
 
