@@ -304,7 +304,7 @@ done
 echo ""
 echo "📊 Résumé :"
 echo "   • Runs examinés : $TOTAL_RUNS"
-echo "   • Runs supprimés  : $DELETED_COUNT"
+echo "   • Runs supprimés : $DELETED_COUNT"
 if [[ "$DRY_RUN" == true ]]; then
     echo "   (Mode DRY RUN : aucune suppression réelle)"
 else
