@@ -839,7 +839,7 @@ if ($TriggerRobloxUpdate) {
     if ($launcherPath) {
         $robloxRunning = Get-Process -Name "RobloxPlayerBeta","RobloxPlayer" -ErrorAction SilentlyContinue
         if ($robloxRunning) {
-            Write-SKIP "Roblox est en cours d'exécution — mise à jour différée à la prochaine fermeture."
+            Write-SKIP "Roblox est en cours d'exécution — mise à jour reportée à la prochaine fermeture."
         } else {
             Write-INFO "Démarrage du launcher Roblox pour déclenchement de l'auto-update..."
             Start-Process $launcherPath -ArgumentList "--app" -ErrorAction SilentlyContinue
