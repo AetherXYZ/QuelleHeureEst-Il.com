@@ -149,7 +149,7 @@ foreach ($svc in $allServices) {
         if ($LASTEXITCODE -eq 0) {
             Write-Host "  [OK] $svc desactive via sc.exe." -ForegroundColor Green
         } else {
-            Write-Host "  [!!] $svc non desactivable (protege) : $_" -ForegroundColor DarkYellow
+            Write-Host "  [!!] $svc non désactivable (protégé) : $_" -ForegroundColor DarkYellow
         }
     }
 }
