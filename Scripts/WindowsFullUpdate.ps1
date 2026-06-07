@@ -1,8 +1,8 @@
 ﻿﻿#Requires -RunAsAdministrator
 <#
 .SYNOPSIS
-    Script de mise à jour complète Windows v?
-    Complete Windows update script v?
+    Script de mise à jour complète Windows v1.0.0
+    Complete Windows update script v1.0.0
 
 .DESCRIPTION
     FR : Effectue toutes les mises à jour disponibles en protégeant les applications en cours.
@@ -392,9 +392,10 @@ function Test-StepSkipped { param([string]$key) return $Script:SkipSteps.Contain
 #  BANNIÈRE
 # ─────────────────────────────────────────────
 
+$ScriptVersion = '1.0.0'
 Clear-Host
 Write-Host $Separator                                                         -ForegroundColor Magenta
-Write-Host "   WINDOWS FULL UPDATE SCRIPT v?"                              -ForegroundColor Magenta
+Write-Host "   WINDOWS FULL UPDATE SCRIPT v$ScriptVersion"                    -ForegroundColor Magenta
 Write-Host "   $(Get-Date -Format 'dddd dd MMMM yyyy - HH:mm:ss')"           -ForegroundColor Magenta
 Write-Host "   Machine : $env:COMPUTERNAME  |  User : $env:USERNAME"         -ForegroundColor Magenta
 Write-Host $Separator                                                         -ForegroundColor Magenta
