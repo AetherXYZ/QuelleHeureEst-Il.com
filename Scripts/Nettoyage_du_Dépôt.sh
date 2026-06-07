@@ -213,7 +213,7 @@ process_run() {
             -H "X-GitHub-Api-Version: 2022-11-28" \
             "repos/$OWNER/$REPO/actions/runs/$run_id" \
             > /dev/null 2>&1; then
-            ((DELETED_COUNT++))
+            ((DELETED_COUNT += 1))
         else
             echo "      ⚠️ Échec suppression $run_id"
         fi
