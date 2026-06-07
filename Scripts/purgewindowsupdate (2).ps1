@@ -3,8 +3,8 @@
     Masquer des mises à jour Windows, purger les caches et redémarrer.
 .DESCRIPTION
     1. Tue les processus WU qui verrouillent les fichiers (TiWorker, MoUsoCoreWorker...).
-    2. Desactive temporairement les services pour empecher leur auto-redemarrage.
-    3. Arrête et verifie l arret effectif avec retry.
+    2. Désactive temporairement les services pour empêcher leur auto-redemarrage.
+    3. Arrête et vérifie l'arrêt effectif avec retry.
     4. Liste et masque les mises a jour via PSWindowsUpdate.
     5. Supprime SoftwareDistribution, catroot2, caches BITS et DeliveryOptimization.
     6. Re-enregistre les DLLs Windows Update.
