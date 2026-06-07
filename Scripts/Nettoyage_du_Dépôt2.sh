@@ -197,30 +197,23 @@ if [[ "$TOTAL_RUNS" -eq 0 ]]; then
 fi
 echo "  → $TOTAL_RUNS runs récupérés."
 
-# Grouper les runs par workflow_id (création d'un tableau associatif workflow_id -> liste de runs)
-# Group runs by workflow_id (build an associative array workflow_id -> list of runs)
-declare -A WORKFLOW_RUNS
+# Grouper les runs par workflow_id en une seule passe jq (optimisation)
+# Group runs by workflow_id in a single jq pass (optimization)
+WORKFLOW_GROUPS=$(echo "$ALL_RUNS" | jq -c '
+    group_by(.workflow_id) | 
+    map({
+        workflow_id: .[0].workflow_id,
+        runs: .
+    })
+')
 
-# Parcourir chaque run et l'ajouter à son workflow
-# Iterate each run and add it to its workflow bucket
-while IFS= read -r run; do
-    workflow_id=$(echo "$run" | jq -r '.workflow_id')
-    # Initialiser le tableau pour ce workflow si nécessaire
-    # Initialize the bucket for this workflow if needed
-    if [[ -z "${WORKFLOW_RUNS[$workflow_id]:-}" ]]; then
-        WORKFLOW_RUNS[$workflow_id]="[]"
-    fi
-    # Ajouter le run à la liste du workflow
-    # Append the run to the workflow's list
-    WORKFLOW_RUNS[$workflow_id]=$(jq --argjson new "$run" '. + [$new]' <<<"${WORKFLOW_RUNS[$workflow_id]}")
-done < <(echo "$ALL_RUNS" | jq -c '.[]')
-
-# Traiter chaque workflow séparément
-# Process each workflow independently
-for workflow_id in "${!WORKFLOW_RUNS[@]}"; do
-    WORKFLOW_NAME=$(get_workflow_name "$workflow_id")
-    RUNS_JSON="${WORKFLOW_RUNS[$workflow_id]}"
+# Parcourir chaque groupe (un workflow à la fois) au lieu d'un tableau associatif bash
+# Iterate over each group (one workflow at a time) instead of a bash associative array
+echo "$WORKFLOW_GROUPS" | jq -c '.[]' | while read -r group; do
+    workflow_id=$(echo "$group" | jq -r '.workflow_id')
+    RUNS_JSON=$(echo "$group" | jq -c '.runs')
     TOTAL_RUNS_WF=$(echo "$RUNS_JSON" | jq length)
+    WORKFLOW_NAME=$(get_workflow_name "$workflow_id")
     
     echo ""
     echo "📦 Workflow : $WORKFLOW_NAME (ID: $workflow_id) — $TOTAL_RUNS_WF runs"
