@@ -1,4 +1,6 @@
-﻿# Définit le comportement par défaut pour tous les fichiers texte
+# Normalisation des fins de ligne
+
+# Définit le comportement par défaut pour tous les fichiers texte
 * text=auto
 
 # Forcer l'utilisation de LF dans le dépôt pour certains types de fichiers
