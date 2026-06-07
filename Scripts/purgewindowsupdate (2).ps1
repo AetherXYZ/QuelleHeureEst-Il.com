@@ -3,8 +3,8 @@
     Masquer des mises à jour Windows, purger les caches et redémarrer.
 .DESCRIPTION
     1. Tue les processus WU qui verrouillent les fichiers (TiWorker, MoUsoCoreWorker...).
-    2. Desactive temporairement les services pour empecher leur auto-redemarrage.
-    3. Arrête et verifie l arret effectif avec retry.
+    2. Désactive temporairement les services pour empêcher leur auto-redemarrage.
+    3. Arrête et vérifie l'arrêt effectif avec retry.
     4. Liste et masque les mises a jour via PSWindowsUpdate.
     5. Supprime SoftwareDistribution, catroot2, caches BITS et DeliveryOptimization.
     6. Re-enregistre les DLLs Windows Update.
@@ -94,7 +94,7 @@ foreach ($proc in $wuProcesses) {
             if ($LASTEXITCODE -eq 0) {
                 Write-Host "  [OK] $proc arrete via taskkill." -ForegroundColor Green
             } else {
-                Write-Host "  [!!] Impossible d arret $proc (processus protege, on continue) : $_" -ForegroundColor DarkYellow
+                Write-Host "  [!!] Impossible d'arrêt $proc (processus protégé, on continue) : $_" -ForegroundColor DarkYellow
             }
         }
     } else {
@@ -149,7 +149,7 @@ foreach ($svc in $allServices) {
         if ($LASTEXITCODE -eq 0) {
             Write-Host "  [OK] $svc desactive via sc.exe." -ForegroundColor Green
         } else {
-            Write-Host "  [!!] $svc non desactivable (protege) : $_" -ForegroundColor DarkYellow
+            Write-Host "  [!!] $svc non désactivable (protégé) : $_" -ForegroundColor DarkYellow
         }
     }
 }
@@ -171,7 +171,7 @@ Write-Host "[ETAPE 3/7] Arret des services Windows Update..." -ForegroundColor Y
 # ENG// Purge BITS queue before stopping to avoid residual locks
 try {
     Get-BitsTransfer -AllUsers -ErrorAction SilentlyContinue | Remove-BitsTransfer -ErrorAction SilentlyContinue
-    Write-Host "  [OK] File d attente BITS purgee." -ForegroundColor Green
+    Write-Host "  [OK] File d'attente BITS purgée." -ForegroundColor Green
 } catch {}
 
 foreach ($svc in $allServices) {
@@ -221,7 +221,7 @@ foreach ($svc in $allServices) {
                 }
             }
         } catch {
-            Write-Host "  [!!] Impossible d identifier le svchost de $svc : $_" -ForegroundColor Red
+            Write-Host "  [!!] Impossible d'identifier le svchost de $svc : $_" -ForegroundColor Red
         }
     }
 }
