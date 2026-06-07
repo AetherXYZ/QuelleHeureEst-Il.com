@@ -1,5 +1,4 @@
-﻿
-﻿#Requires -RunAsAdministrator
+﻿﻿#Requires -RunAsAdministrator
 <#
 .SYNOPSIS
     Script de mise à jour complète Windows v?
