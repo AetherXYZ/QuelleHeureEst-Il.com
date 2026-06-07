@@ -186,7 +186,7 @@ get_all_runs() {
     #     fragile et avait déjà été supprimé en CORRECTION 2).
     #   - Effectue un unique 'jq -s .' final sur le fichier tmp : O(1) en forks jq.
     #   - Affiche les erreurs API sur stderr au lieu de les masquer (2>/dev/null supprimé).
-    #   - Nettoie systématiquement le fichier temporaire via un trap EXIT.
+    #   - Nettoie systématiquement le fichier temporaire via un trap RETURN.
     # [FIX 9 — PAGINATION v3] Replaced '--paginate | jq -s' (silent failure on Git Bash
     #   Windows) with a page-by-page loop that:
     #   - Does NOT use --paginate (works around Git Bash pipe/EOF issue).
@@ -195,7 +195,7 @@ get_all_runs() {
     #     fragile and had already been removed in FIX 2).
     #   - Performs a single final 'jq -s .' on the tmp file: O(1) jq forks.
     #   - Prints API errors to stderr instead of silencing them (2>/dev/null removed).
-    #   - Always cleans up the temp file via an EXIT trap.
+    #   - Always cleans up the temp file via a RETURN trap.
 
     local tmpfile
     # Créer un fichier temporaire pour accumuler les JSON Lines page par page
@@ -251,7 +251,9 @@ get_all_runs() {
             break
         fi
 
-        ((page++))
+        # [CORRECTION 8 — cohérence] Post-incrément '++' banni du script (cf. CORRECTION 8).
+        # [FIX 8 — consistency] Post-increment '++' banned from script (see FIX 8).
+        ((page += 1))
     done
 
     # Slurp unique : transformer les JSON Lines du fichier tmp en un tableau JSON valide.
