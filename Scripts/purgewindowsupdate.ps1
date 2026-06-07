@@ -3,11 +3,12 @@
     Masquer des mises à jour Windows, purger les caches et redémarrer.
 .DESCRIPTION
     1. Relance les services Windows Update.
-    2. Liste toutes les mises à jour disponibles.
-    3. Permet de masquer plusieurs mises à jour en une seule saisie (ex: 1,3,5).
-    4. Arrête les services et vérifie leur arrêt.
-    5. Supprime les dossiers SoftwareDistribution, catroot2 et le cache BITS.
-    6. Propose un redémarrage.
+    2. Prépare PSWindowsUpdate.
+    3. Liste toutes les mises à jour disponibles.
+    4. Permet de masquer plusieurs mises à jour en une seule saisie (ex: 1,3,5).
+    5. Arrête les services et vérifie leur arrêt.
+    6. Supprime les dossiers SoftwareDistribution, catroot2 et le cache BITS.
+    7. Propose un redémarrage.
     Un journal complet est enregistré dans le dossier courant.
 .NOTES
     Exécuter en tant qu'administrateur.
