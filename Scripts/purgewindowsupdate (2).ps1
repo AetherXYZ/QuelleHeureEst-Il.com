@@ -221,7 +221,7 @@ foreach ($svc in $allServices) {
                 }
             }
         } catch {
-            Write-Host "  [!!] Impossible d identifier le svchost de $svc : $_" -ForegroundColor Red
+            Write-Host "  [!!] Impossible d'identifier le svchost de $svc : $_" -ForegroundColor Red
         }
     }
 }
