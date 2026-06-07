@@ -171,7 +171,7 @@ Write-Host "[ETAPE 3/7] Arret des services Windows Update..." -ForegroundColor Y
 # ENG// Purge BITS queue before stopping to avoid residual locks
 try {
     Get-BitsTransfer -AllUsers -ErrorAction SilentlyContinue | Remove-BitsTransfer -ErrorAction SilentlyContinue
-    Write-Host "  [OK] File d attente BITS purgee." -ForegroundColor Green
+    Write-Host "  [OK] File d'attente BITS purgée." -ForegroundColor Green
 } catch {}
 
 foreach ($svc in $allServices) {
