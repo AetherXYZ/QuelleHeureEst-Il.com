@@ -40,11 +40,12 @@
 #   FILTER_STATUS : laisser vide pour tous les états, ou mettre ex: ("success" "failure")
 #
 # -----------------------------------------------------------------------------------------
-# JOURNAL DES CORRECTIONS (v1 → v2 → fusion)
-# FIX LOG (v1 → v2 → fusion)
+# JOURNAL DES CORRECTIONS (v1 → v2 → fusion → v3)
+# FIX LOG (v1 → v2 → fusion → v3)
 # -----------------------------------------------------------------------------------------
 # [CORRECTION 1 — BUG CRITIQUE v1] Filtre jq '.[]' → '.workflow_runs[]' (v1+v2)
-# [CORRECTION 2 — PAGINATION v1]   Boucle manuelle → --paginate natif + jq -s (v1+v2)
+# [CORRECTION 2 — PAGINATION v1]   Boucle manuelle + wc -l (fragile) → --paginate + jq -s
+#                                   (v1+v2) — NOTE : remplacé en CORRECTION 9 (voir ci-dessous)
 # [CORRECTION 3 — EN-TÊTE API v1]  Ajout X-GitHub-Api-Version: 2022-11-28 (v1+v2)
 # [CORRECTION 4 — SUPPRESSION v1]  'gh run delete --yes' → 'gh api -X DELETE' (v1+v2)
 # [CORRECTION 5 — DECLARE -A v1]   Déclaration avant la boucle d'états (v1+v2)
@@ -66,6 +67,21 @@
 #   → set -e kills the script on the very first deletion or dry-run count.
 #   Fix: '((DELETED_COUNT += 1))' — expression yields new value (≥1), exit code 0.
 #   Reference: alexwlchan.net/notes/2024/errexit-and-arithmetic-expressions, bash pitfalls.
+# [CORRECTION 9 — PAGINATION v3]   --paginate | jq -s → pagination manuelle + fichier tmp
+#   Cause : 'gh api --paginate ... | jq -s' peut échouer silencieusement sur Git Bash /
+#   MSYS2 Windows à cause de la gestion des pipes et des process groups : gh garde le flux
+#   ouvert entre les pages et jq -s attend une fin de flux qui peut ne jamais signaler EOF
+#   dans certains contextes, résultant en 0 run récupéré sans aucun message d'erreur.
+#   Fix : boucle page-à-page sans --paginate, accumulation dans un fichier temporaire
+#   (évite O(N) forks jq), comptage via 'jq length' (fiable, ≠ wc -l supprimé en
+#   CORRECTION 2), slurp unique en fin de fonction. Compatible Windows / Linux / macOS.
+#   Cause: 'gh api --paginate ... | jq -s' can fail silently on Git Bash / MSYS2 Windows
+#   due to pipe and process group handling: gh keeps the stream open between pages and
+#   jq -s awaits an EOF that may never be signalled in some contexts, resulting in 0 runs
+#   retrieved with no error message.
+#   Fix: page-by-page loop without --paginate, accumulation in a temp file (avoids O(N)
+#   jq forks), counting via 'jq length' (reliable, ≠ wc -l removed in FIX 2), single
+#   slurp at end of function. Compatible with Windows / Linux / macOS.
 # =========================================================================================================
 
 set -euo pipefail
@@ -75,17 +91,22 @@ OWNER="Phoen0x"
 REPO="QuelleHeureEst-Il.com"
 
 # Nombre de runs les plus anciens et les plus récents à conserver (par état et par workflow)
+# Number of oldest and newest runs to keep (per status and per workflow)
 KEEP_OLDEST=3
 KEEP_NEWEST=3
 
 # Mode dry-run : true = affiche uniquement, false = supprime réellement
-DRY_RUN=true                  # Passe à true pour tester sans supprimer, Passe à false pour supprimer réellement.
+# Dry-run mode: true = display only, false = actually delete
+DRY_RUN=true                  # Passe à true pour tester sans supprimer, Passe à false pour supprimer réellement. /  ENG//  Set to false to actually delete.
 
 # États à traiter (laisser vide pour tous les états)
+# Statuses to process (leave empty for all statuses)
 # États possibles : success, failure, cancelled, skipped, action_required, neutral, timed_out
-FILTER_STATUS=()               # Exemple : ("success" "failure"), Vide = tous les états.
+# Possible statuses: success, failure, cancelled, skipped, action_required, neutral, timed_out
+FILTER_STATUS=()               # Exemple / Example : ("success" "failure"), Vide / Empty = tous les états / all states.
 
 # Limite de runs à récupérer par appel API (max GitHub = 100)
+# Limit of runs fetched per API call (GitHub max = 100)
 PER_PAGE=100
 
 # Mise en place de la variable qui sera amenée à être modifiée : Compteur de runs supprimés (réellement ou en dry-run) — doit rester dans le shell courant
@@ -93,10 +114,12 @@ PER_PAGE=100
 DELETED_COUNT=0
 
 # Délai entre suppressions réelles pour éviter le rate limiting API (en secondes)
+# Delay between real deletions to avoid API rate limiting (in seconds)
 RATE_LIMIT_DELAY=0.5
 
 # ======================================
 # Vérifications préalables
+# Pre-flight checks
 # ======================================
 
 # Vérifier que gh est disponible
@@ -121,12 +144,15 @@ if ! gh auth status &> /dev/null; then
 fi
 
 # =================================================
-# Fonctions
+#   FR//  Fonctions
+#  ENG//  Functions
 # =================================================
 
 # Fonction pour récupérer TOUS les runs du dépôt (tous workflows, y compris supprimés)
 # Function to retrieve ALL repository runs (all workflows, including deleted ones)
 get_all_runs() {
+    # Pagination manuelle sans --paginate (compatibilité Git Bash / Windows)
+    # Manual pagination without --paginate (Git Bash / Windows compatibility)
     # [CORRECTION 1 — BUG CRITIQUE] Le filtre jq était '.[]' ce qui itère sur TOUS les
     #   champs de l'objet de réponse (total_count ET workflow_runs), causant 0 run récupéré.
     #   L'endpoint /actions/runs retourne {"total_count": N, "workflow_runs": [...]}, pas
@@ -151,14 +177,90 @@ get_all_runs() {
     #   pratique officielle GitHub depuis nov. 2022 pour stabilité et compatibilité future.
     # [FIX 3 — API HEADER] Added X-GitHub-Api-Version: 2022-11-28, official GitHub best
     #   practice since Nov. 2022 for stability and future compatibility.
-    gh api --paginate \
-        -H "Accept: application/vnd.github+json" \
-        -H "X-GitHub-Api-Version: 2022-11-28" \
-        "repos/$OWNER/$REPO/actions/runs?per_page=$PER_PAGE" \
-        --jq '.workflow_runs[] | {id: .id, created_at: .created_at, status: .status, conclusion: .conclusion, workflow_id: .workflow_id}' \
-    | jq -s '.'
-    # Note : jq -s '.' slurpe le flux JSON Lines en un tableau JSON valide.
-    # Note: jq -s '.' slurps the JSON Lines stream into a valid JSON array.
+    #
+    # [CORRECTION 9 — PAGINATION v3] Remplacement de '--paginate | jq -s' (échouait
+    #   silencieusement sur Git Bash Windows) par une boucle page-à-page qui :
+    #   - N'utilise PAS --paginate (contourne le problème de pipe/EOF Git Bash).
+    #   - Accumule les JSON Lines dans un fichier temporaire (pas de fork jq par run).
+    #   - Compte les runs via 'jq .workflow_runs | length' (fiable, ≠ wc -l qui était
+    #     fragile et avait déjà été supprimé en CORRECTION 2).
+    #   - Effectue un unique 'jq -s .' final sur le fichier tmp : O(1) en forks jq.
+    #   - Affiche les erreurs API sur stderr au lieu de les masquer (2>/dev/null supprimé).
+    #   - Nettoie systématiquement le fichier temporaire via un trap EXIT.
+    # [FIX 9 — PAGINATION v3] Replaced '--paginate | jq -s' (silent failure on Git Bash
+    #   Windows) with a page-by-page loop that:
+    #   - Does NOT use --paginate (works around Git Bash pipe/EOF issue).
+    #   - Accumulates JSON Lines in a temp file (no per-run jq fork).
+    #   - Counts runs via 'jq .workflow_runs | length' (reliable, ≠ wc -l which was
+    #     fragile and had already been removed in FIX 2).
+    #   - Performs a single final 'jq -s .' on the tmp file: O(1) jq forks.
+    #   - Prints API errors to stderr instead of silencing them (2>/dev/null removed).
+    #   - Always cleans up the temp file via an EXIT trap.
+
+    local tmpfile
+    # Créer un fichier temporaire pour accumuler les JSON Lines page par page
+    # Create a temp file to accumulate JSON Lines page by page
+    tmpfile=$(mktemp) || {
+        echo "❌ Impossible de créer un fichier temporaire (mktemp)." >&2
+        return 1
+    }
+
+    # Nettoyage garanti du fichier temporaire à la sortie de la fonction (succès ou erreur)
+    # Guaranteed temp file cleanup on function exit (success or error)
+    # shellcheck disable=SC2064
+    trap "rm -f '$tmpfile'" RETURN
+
+    local page=1
+    local page_count
+
+    while true; do
+        local raw_page
+        # Récupérer la page brute (objet JSON complet, sans filtrage) pour pouvoir
+        # compter via jq length — fiable contrairement à wc -l.
+        # Fetch the raw page (full JSON object, no filtering) so we can count
+        # via jq length — reliable unlike wc -l.
+        if ! raw_page=$(gh api \
+                -H "Accept: application/vnd.github+json" \
+                -H "X-GitHub-Api-Version: 2022-11-28" \
+                "repos/$OWNER/$REPO/actions/runs?page=$page&per_page=$PER_PAGE" 2>&1); then
+            # Afficher l'erreur sur stderr et sortir de la boucle proprement
+            # Print the error on stderr and exit the loop cleanly
+            echo "⚠️ Erreur API page $page : $raw_page" >&2
+            break
+        fi
+
+        # Compter le nombre de runs dans cette page via jq (fiable)
+        # Count the number of runs in this page via jq (reliable)
+        page_count=$(echo "$raw_page" | jq '.workflow_runs | length')
+
+        # Fin de pagination : page vide → on arrête
+        # End of pagination: empty page → stop
+        if [[ "$page_count" -eq 0 ]]; then
+            break
+        fi
+
+        # Extraire uniquement les champs utiles et ajouter une ligne JSON par run dans tmpfile
+        # Extract only the needed fields and append one JSON line per run to tmpfile
+        echo "$raw_page" | jq -c \
+            '.workflow_runs[] | {id, created_at, status, conclusion, workflow_id}' \
+            >> "$tmpfile"
+
+        # Fin de pagination : page incomplète → c'est la dernière page
+        # End of pagination: partial page → this is the last page
+        if [[ "$page_count" -lt "$PER_PAGE" ]]; then
+            break
+        fi
+
+        ((page++))
+    done
+
+    # Slurp unique : transformer les JSON Lines du fichier tmp en un tableau JSON valide.
+    # Coût : UN seul processus jq, quelle que soit la quantité de runs — O(1).
+    # Single slurp: transform the JSON Lines in the tmp file into a valid JSON array.
+    # Cost: ONE single jq process, regardless of run count — O(1).
+    jq -s '.' "$tmpfile"
+    # Note : le trap RETURN supprime tmpfile automatiquement après ce return implicite.
+    # Note: the RETURN trap deletes tmpfile automatically after this implicit return.
 }
 
 # Fonction pour obtenir le nom d'un workflow à partir de son ID (pour l'affichage)
@@ -218,15 +320,18 @@ process_run() {
             echo "      ⚠️ Échec suppression $run_id"
         fi
         # Rate limiting : attendre un délai configurable entre chaque suppression réelle
+        # Rate limiting: wait a configurable delay between each real deletion
         sleep "$RATE_LIMIT_DELAY"
     fi
 }
 
 # =================================================
 # Traitement principal
+# Main processing
 # =================================================
 
 # Récupérer TOUS les runs du dépôt (sans passer par la liste des workflows)
+# Retrieve ALL repository runs (without going through the workflow list)
 echo "🔍 Récupération de TOUTES les runs du dépôt (y compris workflows supprimés)..."
 ALL_RUNS=$(get_all_runs)
 TOTAL_RUNS=$(echo "$ALL_RUNS" | jq length)
@@ -355,6 +460,7 @@ done < <(echo "$WORKFLOW_GROUPS" | jq -c '.[]')
 #   so DELETED_COUNT is correctly incremented and visible after the loop.
 
 # Afficher le résumé des suppressions
+# Display deletion summary
 echo ""
 echo "📊 Résumé :"
 echo "   • Runs examinées : $TOTAL_RUNS"
