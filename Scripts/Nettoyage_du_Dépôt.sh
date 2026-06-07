@@ -1,4 +1,3 @@
-
 #!/bin/bash
 # =========================================================================================================
 # Nettoyage_du_Dépôt.sh
@@ -39,6 +38,25 @@
 #   DRY_RUN       : true  = simulation (aucune suppression)
 #                   false = suppression réelle
 #   FILTER_STATUS : laisser vide pour tous les états, ou mettre ex: ("success" "failure")
+#
+# -----------------------------------------------------------------------------------------
+# JOURNAL DES CORRECTIONS (v1 → v2 → fusion)
+# FIX LOG (v1 → v2 → fusion)
+# -----------------------------------------------------------------------------------------
+# [CORRECTION 1 — BUG CRITIQUE v1] Filtre jq '.[]' → '.workflow_runs[]' (v1+v2)
+# [CORRECTION 2 — PAGINATION v1]   Boucle manuelle → --paginate natif + jq -s (v1+v2)
+# [CORRECTION 3 — EN-TÊTE API v1]  Ajout X-GitHub-Api-Version: 2022-11-28 (v1+v2)
+# [CORRECTION 4 — SUPPRESSION v1]  'gh run delete --yes' → 'gh api -X DELETE' (v1+v2)
+# [CORRECTION 5 — DECLARE -A v1]   Déclaration avant la boucle d'états (v1+v2)
+# [CORRECTION 6 — MAPFILE v1]      Ignorer l'élément vide final de mapfile (v1+v2)
+# [OPTIMISATION  — GROUPEMENT v2]  declare -A bash O(N jq) → group_by jq O(1) (fusion)
+# [CORRECTION 7 — SUBSHELL v2]     pipe | while → < <(...) process substitution (fusion)
+#   Cause : 'echo ... | while read' exécute le while dans un subshell ; toute
+#   modification de DELETED_COUNT était perdue à la sortie de la boucle (valeur = 0).
+#   Référence : ShellCheck SC2031, BashFAQ/024, bash Cookbook 19.8.
+#   Cause: 'echo ... | while read' runs the while in a subshell; any DELETED_COUNT
+#   modification was lost on loop exit (value = 0).
+#   Reference: ShellCheck SC2031, BashFAQ/024, bash Cookbook 19.8.
 # =========================================================================================================
 
 set -euo pipefail
@@ -61,7 +79,8 @@ FILTER_STATUS=()               # Exemple : ("success" "failure"), Vide = tous le
 # Limite de runs à récupérer par appel API (max GitHub = 100)
 PER_PAGE=100
 
-# Mise en place de la variable qui sera amenée à être modifiée : Compteur de runs supprimés (réellement ou en dry-run)
+# Mise en place de la variable qui sera amenée à être modifiée : Compteur de runs supprimés (réellement ou en dry-run) — doit rester dans le shell courant
+# Counter of deleted runs (real or dry-run) — must stay in the current shell (not a subshell)
 DELETED_COUNT=0
 
 # Délai entre suppressions réelles pour éviter le rate limiting API (en secondes)
@@ -112,10 +131,12 @@ get_all_runs() {
     #   wc -l peut être inexact) par --paginate natif de gh + jq -s pour merger les pages.
     #   --paginate avec --jq émet un objet JSON par ligne (JSON Lines) ; jq -s '.' les
     #   collecte proprement en un seul tableau.
+    #   Note : --paginate --slurp existe mais est incompatible avec --jq (gh CLI limitation).
     # [FIX 2 — PAGINATION] Replaced the manual loop + wc -l (fragile, wc -l can be
     #   inaccurate) with gh's native --paginate + jq -s to merge pages.
     #   --paginate with --jq emits one JSON object per line (JSON Lines); jq -s '.'
     #   cleanly collects them into a single array.
+    #   Note: --paginate --slurp exists but is incompatible with --jq (gh CLI limitation).
     #
     # [CORRECTION 3 — EN-TÊTE API] Ajout de X-GitHub-Api-Version: 2022-11-28, bonne
     #   pratique officielle GitHub depuis nov. 2022 pour stabilité et compatibilité future.
@@ -156,7 +177,7 @@ get_workflow_name() {
 process_run() {
     local run_id="$1"
     local reason="$2"
-    
+
     if [[ "$DRY_RUN" == true ]]; then
         echo "      🔍 [DRY RUN] Serait supprimé : run $run_id ($reason)"
         ((DELETED_COUNT++))
@@ -197,34 +218,39 @@ if [[ "$TOTAL_RUNS" -eq 0 ]]; then
 fi
 echo "  → $TOTAL_RUNS runs récupérés."
 
-# Grouper les runs par workflow_id (création d'un tableau associatif workflow_id -> liste de runs)
-# Group runs by workflow_id (build an associative array workflow_id -> list of runs)
-declare -A WORKFLOW_RUNS
+# [OPTIMISATION — GROUPEMENT v2] Regroupement par workflow_id en une seule passe jq
+#   (group_by) au lieu de la boucle bash du fichier 1 (un fork jq par run, soit O(N)).
+#   Pour 500 runs, la v1 lançait 500 processus jq ; ici, un seul.
+# [OPTIMIZATION — GROUPING v2] Group by workflow_id in a single jq pass (group_by)
+#   instead of file 1's bash loop (one jq fork per run = O(N)).
+#   For 500 runs, v1 spawned 500 jq processes; here, just one.
+WORKFLOW_GROUPS=$(echo "$ALL_RUNS" | jq -c '
+    group_by(.workflow_id) |
+    map({
+        workflow_id: .[0].workflow_id,
+        runs: .
+    })
+')
 
-# Parcourir chaque run et l'ajouter à son workflow
-# Iterate each run and add it to its workflow bucket
-while IFS= read -r run; do
-    workflow_id=$(echo "$run" | jq -r '.workflow_id')
-    # Initialiser le tableau pour ce workflow si nécessaire
-    # Initialize the bucket for this workflow if needed
-    if [[ -z "${WORKFLOW_RUNS[$workflow_id]:-}" ]]; then
-        WORKFLOW_RUNS[$workflow_id]="[]"
-    fi
-    # Ajouter le run à la liste du workflow
-    # Append the run to the workflow's list
-    WORKFLOW_RUNS[$workflow_id]=$(jq --argjson new "$run" '. + [$new]' <<<"${WORKFLOW_RUNS[$workflow_id]}")
-done < <(echo "$ALL_RUNS" | jq -c '.[]')
-
-# Traiter chaque workflow séparément
-# Process each workflow independently
-for workflow_id in "${!WORKFLOW_RUNS[@]}"; do
-    WORKFLOW_NAME=$(get_workflow_name "$workflow_id")
-    RUNS_JSON="${WORKFLOW_RUNS[$workflow_id]}"
+# [CORRECTION 7 — SUBSHELL v2] La v2 utilisait un pipe ('echo ... | while read'),
+#   ce qui exécute le while dans un subshell : DELETED_COUNT était toujours 0 en sortie
+#   de boucle, car les modifications dans un subshell ne remontent jamais au shell parent.
+#   Correction : process substitution '< <(...)' — le while tourne dans le shell courant.
+#   Références : ShellCheck SC2031, BashFAQ/024, bash Cookbook chap. 19.8.
+# [FIX 7 — SUBSHELL v2] v2 used a pipe ('echo ... | while read'), which runs the
+#   while loop in a subshell: DELETED_COUNT was always 0 after the loop, because
+#   variable changes in a subshell never propagate to the parent shell.
+#   Fix: process substitution '< <(...)' — the while runs in the current shell.
+#   References: ShellCheck SC2031, BashFAQ/024, bash Cookbook chap. 19.8.
+while read -r group; do
+    workflow_id=$(echo "$group" | jq -r '.workflow_id')
+    RUNS_JSON=$(echo "$group" | jq -c '.runs')
     TOTAL_RUNS_WF=$(echo "$RUNS_JSON" | jq length)
-    
+    WORKFLOW_NAME=$(get_workflow_name "$workflow_id")
+
     echo ""
     echo "📦 Workflow : $WORKFLOW_NAME (ID: $workflow_id) — $TOTAL_RUNS_WF runs"
-    
+
     # Déterminer les états à traiter pour ce workflow
     # Determine which statuses to process for this workflow
     if [[ ${#FILTER_STATUS[@]} -eq 0 ]]; then
@@ -235,17 +261,17 @@ for workflow_id in "${!WORKFLOW_RUNS[@]}"; do
     else
         STATES_ARRAY=("${FILTER_STATUS[@]}")
     fi
-    
-    # [CORRECTION 5 — DECLARE -A] Le tableau associatif était déclaré à l'intérieur de la
-    #   boucle d'états, ce qui peut provoquer des redéclarations surprenantes (notamment
-    #   sous Bash < 5 ou après un 'unset'). Déclaration déplacée ici, avant la boucle, avec
-    #   KEEP_IDS=() pour réinitialiser proprement à chaque itération d'état.
-    # [FIX 5 — DECLARE -A] The associative array was declared inside the status loop, which
-    #   can cause surprising re-declaration behavior (especially on Bash < 5 or after 'unset').
-    #   Declaration moved here, before the loop, with KEEP_IDS=() to cleanly reset on each
-    #   status iteration.
+
+    # [CORRECTION 5 — DECLARE -A] Le tableau associatif est déclaré ici, avant la boucle
+    #   d'états. Avec le fix subshell (< <(...)), le while tourne dans le shell parent :
+    #   'unset KEEP_IDS' en fin de workflow le supprime proprement, et la prochaine
+    #   itération le redéclare depuis zéro — comportement stable sur Bash 4+.
+    # [FIX 5 — DECLARE -A] The associative array is declared here, before the status loop.
+    #   With the subshell fix (< <(...)), the while runs in the parent shell:
+    #   'unset KEEP_IDS' at end of workflow cleanly removes it, and the next iteration
+    #   re-declares it from scratch — stable behavior on Bash 4+.
     declare -A KEEP_IDS
-    
+
     # Pour chaque état, garder les KEEP_OLDEST plus anciens et KEEP_NEWEST plus récents
     # For each status, keep the KEEP_OLDEST oldest and KEEP_NEWEST most recent runs
     for STATE in "${STATES_ARRAY[@]}"; do
@@ -254,42 +280,42 @@ for workflow_id in "${!WORKFLOW_RUNS[@]}"; do
         # [FIX 6 — MAPFILE] mapfile may insert an empty element on the last line if STATES
         #   ends with a newline. We explicitly skip it.
         [[ -z "$STATE" ]] && continue
-        
+
         # Filtrer les runs correspondant à cet état (conclusion ou status)
         # Filter runs matching this status (conclusion or status field)
         RUNS_STATE=$(echo "$RUNS_JSON" | jq --arg state "$STATE" '[.[] | select((.conclusion // .status) == $state)]')
         COUNT=$(echo "$RUNS_STATE" | jq length)
-        
+
         if [[ "$COUNT" -eq 0 ]]; then
             continue
         fi
-        
+
         echo "  🏷️  État : $STATE — $COUNT runs"
-        
+
         # Trier par date croissante (plus ancien en premier)
         # Sort by ascending date (oldest first)
         SORTED=$(echo "$RUNS_STATE" | jq 'sort_by(.created_at)')
-        
+
         # Réinitialiser le tableau associatif pour cet état (proprement, sans redéclaration)
         # Reset the associative array for this status (cleanly, without re-declaring)
         KEEP_IDS=()
-        
+
         # IDs des runs à conserver : les KEEP_OLDEST premiers et KEEP_NEWEST derniers
         # Run IDs to keep: the KEEP_OLDEST first and KEEP_NEWEST last
-        
+
         # Ajouter les plus anciens / Add the oldest
         for ((i=0; i<KEEP_OLDEST && i<COUNT; i++)); do
             id=$(echo "$SORTED" | jq -r ".[$i].id")
             KEEP_IDS["$id"]=1
         done
-        
+
         # Ajouter les plus récents (en partant de la fin) / Add the most recent (from the end)
         for ((i=0; i<KEEP_NEWEST && i<COUNT; i++)); do
             idx=$((COUNT - 1 - i))
             id=$(echo "$SORTED" | jq -r ".[$idx].id")
             KEEP_IDS["$id"]=1
         done
-        
+
         # Parcourir tous les runs de cet état et supprimer ceux qui ne sont pas dans KEEP_IDS
         # Iterate all runs for this status and delete those not in KEEP_IDS
         for run_id in $(echo "$RUNS_STATE" | jq -r '.[].id'); do
@@ -298,11 +324,16 @@ for workflow_id in "${!WORKFLOW_RUNS[@]}"; do
             fi
         done
     done
-    
+
     # Nettoyer le tableau associatif après chaque workflow
     # Clean up the associative array after each workflow
     unset KEEP_IDS
-done
+
+done < <(echo "$WORKFLOW_GROUPS" | jq -c '.[]')
+# ↑ [CORRECTION 7] Process substitution : le while tourne dans le shell courant,
+#   DELETED_COUNT est donc correctement incrémenté et visible après la boucle.
+# ↑ [FIX 7] Process substitution: the while runs in the current shell,
+#   so DELETED_COUNT is correctly incremented and visible after the loop.
 
 # Afficher le résumé des suppressions
 echo ""
