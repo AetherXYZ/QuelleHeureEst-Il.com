@@ -51,7 +51,7 @@ KEEP_OLDEST=3
 KEEP_NEWEST=3
 
 # Mode dry-run : true = affiche uniquement, false = supprime réellement
-DRY_RUN=true                  # Passe à true pour tester sans supprimer
+DRY_RUN=true                  # Passe à true pour tester sans supprimer, Passe à false pour supprimer réellement.
 
 # États à traiter (laisser vide pour tous les états)
 # États possibles : success, failure, cancelled, skipped, action_required, neutral, timed_out
@@ -303,8 +303,8 @@ done
 # Afficher le résumé des suppressions
 echo ""
 echo "📊 Résumé :"
-echo "   • Runs examinés : $TOTAL_RUNS"
-echo "   • Runs supprimés  : $DELETED_COUNT"
+echo "   • Runs examinées : $TOTAL_RUNS"
+echo "   • Runs supprimés : $DELETED_COUNT"
 if [[ "$DRY_RUN" == true ]]; then
     echo "   (Mode DRY RUN : aucune suppression réelle)"
 else
