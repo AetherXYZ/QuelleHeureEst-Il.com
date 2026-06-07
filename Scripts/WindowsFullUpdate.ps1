@@ -1,8 +1,9 @@
 ﻿﻿#Requires -RunAsAdministrator
+$ScriptVersion = 'v?'
 <#
 .SYNOPSIS
-    Script de mise à jour complète Windows v?
-    Complete Windows update script v?
+    Script de mise-à-jour complète Windows
+    Complete Windows update script
 
 .DESCRIPTION
     FR : Effectue toutes les mises à jour disponibles en protégeant les applications en cours.
@@ -28,10 +29,9 @@
       - Exclusion interactive d'étapes ou de packages Winget
 
 .NOTES
-    Nécessite : PowerShell 5.1+ en tant qu'Administrateur
-    Requires  : PowerShell 5.1+ as Administrator
-    Auteur / Author  : AetherXYZ
-    Version          : ?
+    FR //  Nécessite : PowerShell 5.1+ en tant qu'Administrateur.
+   ENG //  Requires  : PowerShell 5.1+ as Administrator.
+    Auteur.trice / Author  : AetherXYZ
 #>
 
 # ══════════════════════════════════════════════════════════════
@@ -394,18 +394,18 @@ function Test-StepSkipped { param([string]$key) return $Script:SkipSteps.Contain
 
 Clear-Host
 Write-Host $Separator                                                         -ForegroundColor Magenta
-Write-Host "   WINDOWS FULL UPDATE SCRIPT v?"                              -ForegroundColor Magenta
+Write-Host "   WINDOWS FULL UPDATE SCRIPT $ScriptVersion"                              -ForegroundColor Magenta
 Write-Host "   $(Get-Date -Format 'dddd dd MMMM yyyy - HH:mm:ss')"           -ForegroundColor Magenta
 Write-Host "   Machine : $env:COMPUTERNAME  |  User : $env:USERNAME"         -ForegroundColor Magenta
 Write-Host $Separator                                                         -ForegroundColor Magenta
-Write-Log "$Separator`n   WINDOWS FULL UPDATE - $(Get-Date)`n   Machine: $env:COMPUTERNAME`n$Separator"
+Write-Log "$Separator`n   WINDOWS FULL-UPDATE - $(Get-Date)`n   Machine: $env:COMPUTERNAME`n$Separator"
 Flush-Log
 
 Show-ExclusionMenu
 
-# ─────────────────────────────────────────────
-#  BLOC PRINCIPAL  — protégé contre Ctrl+C
-# ─────────────────────────────────────────────
+# ──────────────────────────────────────────────
+#  BLOC PRINCIPAL  —  Protégé contre Ctrl + C
+# ──────────────────────────────────────────────
 #
 #  On intercepte Ctrl+C via le mécanisme PowerShell standard :
 #  le finally{} du try/finally est TOUJOURS exécuté, même sur
