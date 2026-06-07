@@ -3,9 +3,9 @@
     Masquer des mises à jour Windows, purger les caches et redémarrer.
 .DESCRIPTION
     1. Tue les processus WU qui verrouillent les fichiers (TiWorker, MoUsoCoreWorker...).
-    2. Désactive temporairement les services pour empêcher leur auto-redemarrage.
+    2. Désactive temporairement les services pour empêcher leur auto-redémarrage.
     3. Arrête et vérifie l'arrêt effectif avec retry.
-    4. Liste et masque les mises a jour via PSWindowsUpdate.
+    4. Liste et masque les mises-à-jour via PSWindowsUpdate.
     5. Supprime SoftwareDistribution, catroot2, caches BITS et DeliveryOptimization.
     6. Re-enregistre les DLLs Windows Update.
     7. Remet les services en mode Manuel (WU peut rebuilder son cache au prochain scan).
@@ -94,7 +94,7 @@ foreach ($proc in $wuProcesses) {
             if ($LASTEXITCODE -eq 0) {
                 Write-Host "  [OK] $proc arrete via taskkill." -ForegroundColor Green
             } else {
-                Write-Host "  [!!] Impossible d'arrêt $proc (processus protégé, on continue) : $_" -ForegroundColor DarkYellow
+                Write-Host "  [!!] Impossible d'arrêter $proc (processus protégé, on continue) : $_" -ForegroundColor DarkYellow
             }
         }
     } else {
@@ -167,8 +167,8 @@ foreach ($svc in $allServices) {
 Write-Host ""
 Write-Host "[ETAPE 3/7] Arret des services Windows Update..." -ForegroundColor Yellow
 
-#  FR// Purger la file BITS avant d arret pour eviter les verrous residuels
-# ENG// Purge BITS queue before stopping to avoid residual locks
+#   FR//  Purger la file BITS avant d'arrêt pour éviter les verrous résiduels
+#  ENG//  Purge BITS queue before stopping to avoid residual locks
 try {
     Get-BitsTransfer -AllUsers -ErrorAction SilentlyContinue | Remove-BitsTransfer -ErrorAction SilentlyContinue
     Write-Host "  [OK] File d'attente BITS purgée." -ForegroundColor Green

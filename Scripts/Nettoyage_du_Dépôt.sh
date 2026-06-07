@@ -63,6 +63,9 @@ PER_PAGE=100
 # Mise en place de la variable qui sera amenée à être modifiée : Compteur de runs supprimés (réellement ou en dry-run)
 DELETED_COUNT=0
 
+# Délai entre suppressions réelles pour éviter le rate limiting API (en secondes)
+RATE_LIMIT_DELAY=0.5
+
 # ======================================
 # Vérifications préalables
 # ======================================
@@ -173,8 +176,8 @@ process_run() {
         else
             echo "      ⚠️ Échec suppression $run_id"
         fi
-        # Rate limiting : attendre 0.5 seconde entre chaque suppression réelle
-        sleep 0.5
+        # Rate limiting : attendre un délai configurable entre chaque suppression réelle
+        sleep "$RATE_LIMIT_DELAY"
     fi
 }
 
