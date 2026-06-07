@@ -1,5 +1,5 @@
 ﻿﻿#Requires -RunAsAdministrator
-$ScriptVersion = 'v?'
+$ScriptVersion = 'v6.1.1'
 <#
 .SYNOPSIS
     Script de mise-à-jour complète Windows
