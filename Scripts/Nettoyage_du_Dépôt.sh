@@ -4,6 +4,8 @@
 # =========================================================================================================
 # But : Garder uniquement les N runs les plus anciens et les N runs les plus récents
 #       par état (success, failure, etc.) pour CHAQUE workflow GitHub Actions.
+#       Optionnellement : ignorer les runs déclenchés manuellement (workflow_dispatch),
+#       et/ou supprimer TOUTES les runs des workflows dont le fichier de config a disparu du dépôt.
 #
 # PRÉREQUIS ET INSTALLATION (PowerShell en administrateur) :
 #
@@ -31,17 +33,24 @@
 #   ./Nettoyage_du_Dépôt.sh
 #
 # Configuration (modifier les valeurs ci-dessous) :
-#   OWNER         : organisation ou utilisateur propriétaire du dépôt
-#   REPO          : nom du dépôt
-#   KEEP_OLDEST   : nombre de runs les plus anciens à conserver (par état et par workflow)
-#   KEEP_NEWEST   : nombre de runs les plus récents à conserver (par état et par workflow)
-#   DRY_RUN       : true  = simulation (aucune suppression)
-#                   false = suppression réelle
-#   FILTER_STATUS : laisser vide pour tous les états, ou mettre ex: ("success" "failure")
+#   OWNER            : organisation ou utilisateur propriétaire du dépôt
+#   REPO             : nom du dépôt
+#   KEEP_OLDEST      : nombre de runs les plus anciens à conserver (par état et par workflow)
+#   KEEP_NEWEST      : nombre de runs les plus récents à conserver (par état et par workflow)
+#   DRY_RUN          : true  = simulation (aucune suppression)
+#                      false = suppression réelle
+#   FILTER_STATUS    : laisser vide pour tous les états, ou mettre ex: ("success" "failure")
+#   SKIP_MANUAL      : true  = les runs déclenchés manuellement (workflow_dispatch) sont
+#                              complètement ignorées : ni supprimées, ni comptées dans KEEP_OLDEST/NEWEST
+#                      false = tous les runs sont traités normalement (défaut)
+#   DELETE_ORPHANED  : true  = si un workflow n'a plus de fichier de config actif dans le dépôt
+#                              (fichier .yml supprimé ou workflow désactivé), TOUS ses runs sont
+#                              supprimées sans tenir compte de KEEP_OLDEST / KEEP_NEWEST
+#                      false = les workflows orphelins sont traités comme les autres (défaut)
 #
 # -----------------------------------------------------------------------------------------
-# JOURNAL DES CORRECTIONS (v1 → v2 → fusion → v3)
-# FIX LOG (v1 → v2 → fusion → v3)
+# JOURNAL DES CORRECTIONS ET FONCTIONNALITÉS (v1 → v2 → fusion → v3 → v4)
+# FIX AND FEATURE LOG (v1 → v2 → fusion → v3 → v4)
 # -----------------------------------------------------------------------------------------
 # [CORRECTION 1 — BUG CRITIQUE v1] Filtre jq '.[]' → '.workflow_runs[]' (v1+v2)
 # [CORRECTION 2 — PAGINATION v1]   Boucle manuelle + wc -l (fragile) → --paginate + jq -s
@@ -97,6 +106,36 @@
 #   Root fix: '| tr -d '\r'' added on ALL ID extractions (both KEEP_IDS loops + deletion
 #   loop), and 'for run_id in $()' replaced with 'while IFS= read -r' + process
 #   substitution (more robust, avoids word splitting).
+# [FONCTIONNALITÉ 11 — SKIP_MANUAL v4] Ignorer les runs déclenchés manuellement
+#   Nouvelle variable SKIP_MANUAL (false par défaut).
+#   Si true : les runs dont le champ 'event' vaut 'workflow_dispatch' sont exclus du
+#   traitement — elles ne sont ni supprimées ni comptées dans KEEP_OLDEST / KEEP_NEWEST.
+#   Ils s'accumulent sans limite ; c'est intentionnel (l'utilisateur veut les conserver).
+#   Implémentation : ajout du champ 'event' dans get_all_runs, filtrage dans la boucle
+#   principale avant le calcul des KEEP_IDS.
+#   New SKIP_MANUAL variable (false by default).
+#   If true: runs whose 'event' field equals 'workflow_dispatch' are excluded from
+#   processing — they are neither deleted nor counted in KEEP_OLDEST / KEEP_NEWEST.
+#   They accumulate without limit; this is intentional (user wants to preserve them).
+#   Implementation: 'event' field added in get_all_runs, filtering in the main loop
+#   before KEEP_IDS computation.
+# [FONCTIONNALITÉ 12 — DELETE_ORPHANED v4] Supprimer tous les runs des workflows orphelins
+#   Nouvelle variable DELETE_ORPHANED (false par défaut).
+#   Un workflow est considéré "orphelin" si son fichier de config .yml a été supprimé du
+#   dépôt : l'API GitHub retourne alors state != "active" (ex: "disabled_manually") ou
+#   une réponse vide (workflow complètement introuvable).
+#   Si true : TOUTES les runs d'un workflow orphelin sont supprimées, sans tenir compte de
+#   KEEP_OLDEST / KEEP_NEWEST. La logique KEEP est court-circuitée via 'continue'.
+#   Implémentation : get_workflow_name étendue pour détecter l'état via le même appel API
+#   (sans surcoût), résultat stocké dans la variable globale WORKFLOW_IS_ORPHANED.
+#   New DELETE_ORPHANED variable (false by default).
+#   A workflow is considered "orphaned" if its .yml config file was deleted from the repo:
+#   the GitHub API then returns state != "active" (e.g. "disabled_manually") or an empty
+#   response (workflow completely not found).
+#   If true: ALL runs of an orphaned workflow are deleted, regardless of KEEP_OLDEST /
+#   KEEP_NEWEST. The KEEP logic is short-circuited via 'continue'.
+#   Implementation: get_workflow_name extended to detect state via the same API call
+#   (no extra cost), result stored in global variable WORKFLOW_IS_ORPHANED.
 # =========================================================================================================
 
 set -euo pipefail
@@ -120,17 +159,46 @@ DRY_RUN=false                  # Passe à true pour tester sans supprimer, Passe
 # Possible statuses: success, failure, cancelled, skipped, action_required, neutral, timed_out
 FILTER_STATUS=()               # Exemple / Example : ("success" "failure"), Vide / Empty = tous les états / all states.
 
+# Ignorer les runs déclenchés manuellement via "Run workflow" (event = workflow_dispatch)
+# Ignore runs triggered manually via "Run workflow" (event = workflow_dispatch)
+# true  = ces runs sont ignorées : ni supprimées, ni comptées dans KEEP_OLDEST / KEEP_NEWEST
+# false = tous les runs sont traités normalement (défaut / default)
+# true  = these runs are ignored: neither deleted nor counted in KEEP_OLDEST / KEEP_NEWEST
+# false = all runs are processed normally (default)
+SKIP_MANUAL=true
+
+# Supprimer TOUTES les runs des workflows dont le fichier de config n'existe plus dans le dépôt
+# Delete ALL runs from workflows whose config file no longer exists in the repository
+# true  = si le workflow est orphelin (state != "active" ou introuvable), TOUTES ses runs sont
+#         supprimées, sans tenir compte de KEEP_OLDEST / KEEP_NEWEST
+# false = les workflows orphelins sont traités comme les autres (défaut / default)
+# true  = if the workflow is orphaned (state != "active" or not found), ALL its runs are
+#         deleted regardless of KEEP_OLDEST / KEEP_NEWEST
+# false = orphaned workflows are treated like any other (default)
+DELETE_ORPHANED=true
+
 # Limite de runs à récupérer par appel API (max GitHub = 100)
 # Limit of runs fetched per API call (GitHub max = 100)
 PER_PAGE=100
 
-# Mise en place de la variable qui sera amenée à être modifiée : Compteur de runs supprimés (réellement ou en dry-run) — doit rester dans le shell courant
-# Counter of deleted runs (real or dry-run) — must stay in the current shell (not a subshell)
-DELETED_COUNT=0
-
 # Délai entre suppressions réelles pour éviter le rate limiting API (en secondes)
 # Delay between real deletions to avoid API rate limiting (in seconds)
 RATE_LIMIT_DELAY=0.5
+
+
+# ======================================
+# VARIABLES INTERNES NE PAS TOUCHER
+# ======================================
+
+# Mise en place de la variable qui sera amenée à être modifiée : Compteur de runs supprimées (réellement ou en dry-run) — doit rester dans le shell courant, ne pas modifier
+# Counter of deleted runs (real or dry-run) — must stay in the current shell (not a subshell)
+DELETED_COUNT=0
+
+# Indique si le workflow courant est orphelin (plus de fichier .yml actif)
+# Internal variable: indicates whether the current workflow is orphaned (no active .yml file)
+# Mise à jour par get_workflow_name() à chaque appel / Updated by get_workflow_name() on each call
+WORKFLOW_IS_ORPHANED=false
+
 
 # ======================================
 # Vérifications préalables
@@ -163,7 +231,7 @@ fi
 #  ENG//  Functions
 # =================================================
 
-# Fonction pour récupérer TOUS les runs du dépôt (tous workflows, y compris supprimés)
+# Fonction pour récupérer TOUTES les runs du dépôt (tous workflows, y compris supprimés)
 # Function to retrieve ALL repository runs (all workflows, including deleted ones)
 get_all_runs() {
     # Pagination manuelle sans --paginate (compatibilité Git Bash / Windows)
@@ -211,6 +279,11 @@ get_all_runs() {
     #   - Performs a single final 'jq -s .' on the tmp file: O(1) jq forks.
     #   - Prints API errors to stderr instead of silencing them (2>/dev/null removed).
     #   - Always cleans up the temp file via a RETURN trap.
+    #
+    # [FONCTIONNALITÉ 11 — SKIP_MANUAL] Ajout du champ 'event' dans les objets extraits
+    #   pour permettre le filtrage des runs workflow_dispatch dans la boucle principale.
+    # [FEATURE 11 — SKIP_MANUAL] Added 'event' field to extracted objects to enable
+    #   workflow_dispatch run filtering in the main loop.
 
     local tmpfile
     # Créer un fichier temporaire pour accumuler les JSON Lines page par page
@@ -256,8 +329,10 @@ get_all_runs() {
 
         # Extraire uniquement les champs utiles et ajouter une ligne JSON par run dans tmpfile
         # Extract only the needed fields and append one JSON line per run to tmpfile
+        # Note : 'event' ajouté pour FONCTIONNALITÉ 11 (SKIP_MANUAL)
+        # Note: 'event' added for FEATURE 11 (SKIP_MANUAL)
         echo "$raw_page" | jq -c \
-            '.workflow_runs[] | {id, created_at, status, conclusion, workflow_id}' \
+            '.workflow_runs[] | {id, created_at, status, conclusion, workflow_id, event}' \
             >> "$tmpfile"
 
         # Fin de pagination : page incomplète → c'est la dernière page
@@ -281,22 +356,50 @@ get_all_runs() {
 }
 
 # Fonction pour obtenir le nom d'un workflow à partir de son ID (pour l'affichage)
+# et détecter s'il est orphelin (fichier .yml absent ou workflow désactivé).
 # Function to get a workflow's name from its ID (for display purposes)
+# and detect whether it is orphaned (missing .yml file or disabled workflow).
+#
+# [FONCTIONNALITÉ 12 — DELETE_ORPHANED] Cette fonction effectue UN SEUL appel API et
+#   en extrait à la fois le nom et le champ 'state'. Si state != "active" ou si la
+#   réponse est vide (workflow 404), la variable globale WORKFLOW_IS_ORPHANED est mise
+#   à true. Réutiliser le même appel API évite tout surcoût réseau.
+# [FEATURE 12 — DELETE_ORPHANED] This function performs ONE API call and extracts both
+#   the name and the 'state' field from it. If state != "active" or the response is
+#   empty (workflow 404), the global variable WORKFLOW_IS_ORPHANED is set to true.
+#   Reusing the same API call avoids any extra network overhead.
 get_workflow_name() {
     local workflow_id="$1"
-    local name
+    local api_response name state
+
     # [CORRECTION 3 — EN-TÊTE API] Ajout de X-GitHub-Api-Version sur tous les appels gh api.
     # [FIX 3 — API HEADER] Added X-GitHub-Api-Version to all gh api calls.
-    name=$(gh api \
+    api_response=$(gh api \
         -H "Accept: application/vnd.github+json" \
         -H "X-GitHub-Api-Version: 2022-11-28" \
-        "repos/$OWNER/$REPO/actions/workflows/$workflow_id" \
-        --jq '.name' 2>/dev/null) || true
+        "repos/$OWNER/$REPO/actions/workflows/$workflow_id" 2>/dev/null) || true
+
+    # Extraire le nom et l'état depuis la réponse (vide si 404 ou erreur réseau)
+    # Extract name and state from the response (empty if 404 or network error)
+    name=$(echo "$api_response"  | jq -r '.name  // empty' 2>/dev/null) || true
+    state=$(echo "$api_response" | jq -r '.state // empty' 2>/dev/null) || true
+
     if [[ -z "$name" ]]; then
-        # Le workflow a probablement été supprimé mais ses runs subsistent
-        # The workflow was likely deleted but its runs still exist
-        name="workflow_$workflow_id (peut-être supprimé / possibly deleted)"
+        # Workflow complètement introuvable via l'API (supprimé côté GitHub)
+        # Workflow completely not found via the API (deleted on GitHub side)
+        WORKFLOW_IS_ORPHANED=true
+        name="workflow_$workflow_id (supprimé / deleted)"
+    elif [[ "$state" != "active" ]]; then
+        # Workflow trouvé mais inactif : fichier .yml supprimé du dépôt → désactivé par GitHub
+        # Workflow found but inactive: .yml file deleted from repo → disabled by GitHub
+        WORKFLOW_IS_ORPHANED=true
+        name="$name (inactif·$state / inactive·$state)"
+    else
+        # Workflow actif, fichier .yml toujours présent dans le dépôt
+        # Active workflow, .yml file still present in the repository
+        WORKFLOW_IS_ORPHANED=false
     fi
+
     echo "$name"
 }
 
@@ -347,7 +450,7 @@ process_run() {
 # Main processing
 # =================================================
 
-# Récupérer TOUS les runs du dépôt (sans passer par la liste des workflows)
+# Récupérer TOUTES les runs du dépôt (sans passer par la liste des workflows)
 # Retrieve ALL repository runs (without going through the workflow list)
 echo "🔍 Récupération de TOUTES les runs du dépôt (y compris workflows supprimés)..."
 ALL_RUNS=$(get_all_runs)
@@ -357,7 +460,7 @@ if [[ "$TOTAL_RUNS" -eq 0 ]]; then
     echo "  → Aucun run trouvé."
     exit 0
 fi
-echo "  → $TOTAL_RUNS runs récupérés."
+echo "  → $TOTAL_RUNS runs récupérées."
 
 # [OPTIMISATION — GROUPEMENT v2] Regroupement par workflow_id en une seule passe jq
 #   (group_by) au lieu de la boucle bash du fichier 1 (un fork jq par run, soit O(N)).
@@ -387,10 +490,55 @@ while read -r group; do
     workflow_id=$(echo "$group" | jq -r '.workflow_id')
     RUNS_JSON=$(echo "$group" | jq -c '.runs')
     TOTAL_RUNS_WF=$(echo "$RUNS_JSON" | jq length)
+
+    # [FONCTIONNALITÉ 12 — DELETE_ORPHANED] Réinitialiser WORKFLOW_IS_ORPHANED avant chaque
+    #   appel à get_workflow_name, qui va le remettre à jour selon l'état réel du workflow.
+    # [FEATURE 12 — DELETE_ORPHANED] Reset WORKFLOW_IS_ORPHANED before each call to
+    #   get_workflow_name, which will update it based on the workflow's actual state.
+    WORKFLOW_IS_ORPHANED=false
     WORKFLOW_NAME=$(get_workflow_name "$workflow_id")
 
     echo ""
     echo "📦 Workflow : $WORKFLOW_NAME (ID: $workflow_id) — $TOTAL_RUNS_WF runs"
+
+    # ------------------------------------------------------------------
+    # [FONCTIONNALITÉ 12 — DELETE_ORPHANED] Si le workflow est orphelin et
+    #   DELETE_ORPHANED=true : supprimer TOUTES ses runs, ignorer KEEP_OLDEST/NEWEST.
+    # [FEATURE 12 — DELETE_ORPHANED] If the workflow is orphaned and
+    #   DELETE_ORPHANED=true: delete ALL its runs, bypass KEEP_OLDEST/NEWEST.
+    # ------------------------------------------------------------------
+    if [[ "$DELETE_ORPHANED" == true ]] && [[ "$WORKFLOW_IS_ORPHANED" == true ]]; then
+        echo "  🗂️  Workflow orphelin détecté (DELETE_ORPHANED=true) — suppression de TOUS les $TOTAL_RUNS_WF runs"
+        while IFS= read -r run_id; do
+            process_run "$run_id" "workflow orphelin : $WORKFLOW_NAME — fichier de config absent du dépôt / config file missing from repository"
+        done < <(echo "$RUNS_JSON" | jq -r '.[].id' | tr -d '\r')
+        # Court-circuit : pas de logique KEEP pour ce workflow
+        # Short-circuit: no KEEP logic for this workflow
+        continue
+    fi
+
+    # ------------------------------------------------------------------
+    # [FONCTIONNALITÉ 11 — SKIP_MANUAL] Si SKIP_MANUAL=true : retirer les runs
+    #   workflow_dispatch de RUNS_JSON avant tout calcul KEEP_IDS.
+    #   Elles ne seront ni supprimées ni prises en compte dans les seuils KEEP.
+    # [FEATURE 11 — SKIP_MANUAL] If SKIP_MANUAL=true: remove workflow_dispatch
+    #   runs from RUNS_JSON before any KEEP_IDS computation.
+    #   They will be neither deleted nor counted toward KEEP thresholds.
+    # ------------------------------------------------------------------
+    if [[ "$SKIP_MANUAL" == true ]]; then
+        manual_count=$(echo "$RUNS_JSON" | jq '[.[] | select(.event == "workflow_dispatch")] | length')
+        if [[ "$manual_count" -gt 0 ]]; then
+            echo "  ℹ️  $manual_count run(s) manuel(s) (workflow_dispatch) ignoré(s) — SKIP_MANUAL=true"
+            RUNS_JSON=$(echo "$RUNS_JSON" | jq '[.[] | select(.event != "workflow_dispatch")]')
+            TOTAL_RUNS_WF=$(echo "$RUNS_JSON" | jq length)
+        fi
+        # Si tous les runs de ce workflow étaient manuels, rien à faire
+        # If all runs for this workflow were manual, nothing to do
+        if [[ "$TOTAL_RUNS_WF" -eq 0 ]]; then
+            echo "  → Aucune run non-manuelle à traiter pour ce workflow."
+            continue
+        fi
+    fi
 
     # Déterminer les états à traiter pour ce workflow
     # Determine which statuses to process for this workflow
@@ -422,7 +570,7 @@ while read -r group; do
         #   ends with a newline. We explicitly skip it.
         [[ -z "$STATE" ]] && continue
 
-        # Filtrer les runs correspondant à cet état (conclusion ou status)
+        # Filtrer les runs correspondantes à cet état (conclusion ou status)
         # Filter runs matching this status (conclusion or status field)
         RUNS_STATE=$(echo "$RUNS_JSON" | jq --arg state "$STATE" '[.[] | select((.conclusion // .status) == $state)]')
         COUNT=$(echo "$RUNS_STATE" | jq length)
@@ -461,7 +609,7 @@ while read -r group; do
             KEEP_IDS["$id"]=1
         done
 
-        # Parcourir tous les runs de cet état et supprimer ceux qui ne sont pas dans KEEP_IDS
+        # Parcourir toutes les runs de cet état et supprimer celles qui ne sont pas dans KEEP_IDS
         # Iterate all runs for this status and delete those not in KEEP_IDS
         #
         # [CORRECTION 10 — CRLF] 'for run_id in $(jq -r ...)' remplacé par
@@ -498,12 +646,12 @@ done < <(echo "$WORKFLOW_GROUPS" | jq -c '.[]')
 echo ""
 echo "📊 Résumé :"
 echo "   • Runs examinées : $TOTAL_RUNS"
-echo "   • Runs supprimés : $DELETED_COUNT"
+echo "   • Runs supprimées : $DELETED_COUNT"
 if [[ "$DRY_RUN" == true ]]; then
     echo "   (Mode DRY RUN : aucune suppression réelle)"
 else
-    echo "   (Mode réel : $DELETED_COUNT runs supprimés)"
+    echo "   (Mode réel : $DELETED_COUNT runs supprimées)"
 fi
 
 echo ""
-echo "✅ Opération terminée (dry-run=$DRY_RUN)."
+echo "✅ Opérations terminées (dry-run=$DRY_RUN)."
