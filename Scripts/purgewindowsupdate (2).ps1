@@ -1,4 +1,5 @@
-﻿﻿<#
+﻿
+﻿<#
 .SYNOPSIS
     Masquer des mises à jour Windows, purger les caches et redémarrer.
 .DESCRIPTION
