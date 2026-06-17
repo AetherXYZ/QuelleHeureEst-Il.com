@@ -32,8 +32,8 @@ devDependencies:
     specifier: ^18.3.0
     version: 18.3.7(@types/react@18.3.30)
   '@vitejs/plugin-react':
-    specifier: ^4.7.0
-    version: 4.7.0(vite@7.3.5)
+    specifier: ^6.0.2
+    version: 6.0.2(vite@8.0.16)
   autoprefixer:
     specifier: ^10.4.18
     version: 10.5.0(postcss@8.5.15)
@@ -62,8 +62,8 @@ devDependencies:
     specifier: ^8.3.0
     version: 8.60.1(eslint@9.39.4)(typescript@5.9.3)
   vite:
-    specifier: ^7.2.0
-    version: 7.3.5
+    specifier: ^8.0.16
+    version: 8.0.16
 
 packages:
 
@@ -2371,12 +2371,14 @@ packages:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
     dev: true
 
-  /vite@7.3.5:
-    resolution: {integrity: sha512-KuOaNhcnGFN2zIPGA7wRmzF+lJA1sea7rHq17aiJ++9lzY1WWG6Jpwqwe1KNbRVPIqHmr8GLYx7jbrQcN/7/ww==}
+  /vite@8.0.16:
+    resolution: {integrity: sha512-h9bXPmJichP5fLmVQo3PyaGSDE2n3aPuomeAlVRm0JLmt4rY6zmPKd59HYI4LNW8oTK7tlTsuC7l/m7awx9Jcw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
       '@types/node': ^20.19.0 || >=22.12.0
+      '@vitejs/devtools': ^0.1.18
+      esbuild: ^0.27.0 || ^0.28.0
       jiti: '>=1.21.0'
       less: ^4.0.0
       lightningcss: ^1.21.0
@@ -2389,6 +2391,10 @@ packages:
       yaml: ^2.4.2
     peerDependenciesMeta:
       '@types/node':
+        optional: true
+      '@vitejs/devtools':
+        optional: true
+      esbuild:
         optional: true
       jiti:
         optional: true
