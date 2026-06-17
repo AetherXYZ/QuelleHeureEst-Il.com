@@ -16,6 +16,7 @@ const report = {
   merges: [],
   structureRepairs: [],
   discarded: [],
+  unparsed: [],
 };
 
 function compareVersions(a, b) {
@@ -280,18 +281,16 @@ function preprocessTypeUtilsSplice(arr) {
 
 function upsert(map, order, key, obj, meta) {
   if (!obj) {
-    report.unparsed = report.unparsed || [];
     report.unparsed.push({ key, ...meta });
     return;
   }
   if (!obj.version && key !== '') {
-    report.unparsed = report.unparsed || [];
     report.unparsed.push({ key, ...meta });
     return;
   }
   if (!map.has(key)) {
     map.set(key, structuredClone(obj));
-    ensureOrder(key);
+    ensureOrder(order, key);
     report.merges.push({ key, action: 'insert', version: obj.version, ...meta });
     return;
   }
@@ -384,7 +383,7 @@ function preprocessOrphanSplices(arr) {
         from: 'node_modules/@typescript-eslint/eslint-plugin',
         to: 'node_modules/@types/prop-types',
         version: fragObj.version,
-        note: 'fragment — fusionnée si champs uniques',
+        note: 'fragment — merged if unique fields',
       });
     }
   }
@@ -530,7 +529,17 @@ try {
   JSON.parse(outText);
   valid = true;
 } catch (e) {
-  report.jsonError = e.message;
+  if (e instanceof Error) {
+    report.jsonError = {
+      name: e.name,
+      message: e.message,
+      stack: e.stack,
+    };
+  } else {
+    report.jsonError = {
+      message: String(e),
+    };
+  }
 }
 
 fs.writeFileSync(reportPath, JSON.stringify(report, null, 2) + '\n');
