@@ -530,7 +530,17 @@ try {
   JSON.parse(outText);
   valid = true;
 } catch (e) {
-  report.jsonError = e.message;
+  if (e instanceof Error) {
+    report.jsonError = {
+      name: e.name,
+      message: e.message,
+      stack: e.stack,
+    };
+  } else {
+    report.jsonError = {
+      message: String(e),
+    };
+  }
 }
 
 fs.writeFileSync(reportPath, JSON.stringify(report, null, 2) + '\n');
