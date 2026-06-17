@@ -90,7 +90,19 @@ $TriggerRobloxUpdate = $true
 $LogFile   = "$env:TEMP\WindowsFullUpdate_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
 $Separator        = "=" * 60
 $Script:LogBuffer = [System.Collections.Generic.List[string]]::new()
-$TotalSteps       = 9   # 9 étapes principales (sans Roblox)
+# Étapes principales (sans Roblox) — source de vérité unique pour le total
+$Script:MainSteps = @(
+    "WindowsUpdate"
+    "Winget"
+    "MicrosoftStore"
+    "PowerShell"
+    "Chocolatey"
+    "Scoop"
+    "DevTools"
+    "EdgeWebView2"
+    "SystemCleanup"
+)
+$TotalSteps       = $Script:MainSteps.Count
 
 # Liste des packages winget à ignorer (ID exacts), peuplée par le menu
 $Script:WingetIgnore = [System.Collections.Generic.List[string]]::new()
@@ -573,8 +585,10 @@ if (Test-StepSkipped 'store') {
     $storeDone = $false
     try {
         Add-Type -AssemblyName "Windows.ApplicationModel" -ErrorAction Stop
+        # NOTE: This hardcoded WinRT type depends on specific Windows Store API availability and may vary by OS version.
         $typeName = 'Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager, Windows.ApplicationModel.Store.Preview.InstallControl, ContentType=WindowsRuntime'
-        $type = [Type]::GetType($typeName, $true)
+        $type = [Type]::GetType($typeName, $false)
+        if (-not $type) { throw "WinRT type unavailable: $typeName" }
         $mgr     = [Activator]::CreateInstance($type)
         $updates = $mgr.SearchForAllUpdatesAsync().GetAwaiter().GetResult()
         if ($updates.Count -gt 0) {
@@ -587,7 +601,9 @@ if (Test-StepSkipped 'store') {
             Write-SKIP "Aucune mise à jour Store disponible (WinRT)."
             $storeDone = $true
         }
-    } catch {}
+    } catch {
+        Write-INFO "API WinRT Store indisponible ou incompatible, bascule vers winget msstore."
+    }
 
     if (-not $storeDone) {
         if (Test-Cmd "winget") {
@@ -631,6 +647,7 @@ if (Test-StepSkipped 'edge') {
         } else {
             Write-INFO "Problème détecté — tentative de réparation EdgeWebView2..."
             # Tentative de réinstallation propre via le programme de réparation intégré
+            # GUID EdgeUpdate Client de Microsoft Edge WebView2 Runtime (registre machine)
             $wv2Key = Get-ItemProperty "HKLM:\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}" -ErrorAction SilentlyContinue
             if ($wv2Key -and (Test-Path $wv2Key.path)) {
                 Start-Process $wv2Key.path -ArgumentList "--reinstall --system-level --verbose-logging" -Wait -NoNewWindow
@@ -883,9 +900,9 @@ if ($Script:SkippedDueToRunning.Count -gt 0) {
 
 # Statut redémarrage
 $needsReboot = $false
-try { $needsReboot = (Get-WURebootStatus -Silent -ErrorAction SilentlyContinue).RebootRequired } catch {}
-if (-not $needsReboot) { try { $needsReboot = Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired" } catch {} }
-if (-not $needsReboot) { try { $needsReboot = Test-Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\PendingFileRenameOperations" }          catch {} }
+try { $needsReboot = (Get-WURebootStatus -Silent -ErrorAction SilentlyContinue).RebootRequired } catch { Write-Log "INFO: Impossible de lire Get-WURebootStatus (ignoré) : $_" }
+if (-not $needsReboot) { try { $needsReboot = Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired" } catch { Write-Log "INFO: Impossible de lire la clé RebootRequired (ignoré) : $_" } }
+if (-not $needsReboot) { try { $needsReboot = Test-Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\PendingFileRenameOperations" }          catch { Write-Log "INFO: Impossible de lire PendingFileRenameOperations (ignoré) : $_" } }
 
 Write-Host ""
 if ($needsReboot) {
