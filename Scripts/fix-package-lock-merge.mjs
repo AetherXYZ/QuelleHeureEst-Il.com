@@ -16,6 +16,7 @@ const report = {
   merges: [],
   structureRepairs: [],
   discarded: [],
+  unparsed: [],
 };
 
 function compareVersions(a, b) {
@@ -280,12 +281,10 @@ function preprocessTypeUtilsSplice(arr) {
 
 function upsert(map, order, key, obj, meta) {
   if (!obj) {
-    report.unparsed = report.unparsed || [];
     report.unparsed.push({ key, ...meta });
     return;
   }
   if (!obj.version && key !== '') {
-    report.unparsed = report.unparsed || [];
     report.unparsed.push({ key, ...meta });
     return;
   }
