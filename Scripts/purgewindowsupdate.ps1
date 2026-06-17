@@ -303,9 +303,12 @@ foreach ($p in $cachePaths) {
             Write-Host "  OK Dossier supprimé : $p" -ForegroundColor Green
         } catch {
             Write-Host "  Échec via PowerShell, tentative via cmd..." -ForegroundColor DarkYellow
-            cmd /c "rmdir /s /q `"$p`"" 2>$null
+            $cmdError = cmd /c "rmdir /s /q `"$p`"" 2>&1
             if (Test-Path $p) {
                 Write-Host "  [!] ÉCHEC également via cmd (fichiers verrouillés, ils sauteront au reboot)." -ForegroundColor Red
+                if ($cmdError) {
+                    Write-Host "  Détail cmd: $($cmdError -join ' ')" -ForegroundColor DarkGray
+                }
             } else {
                 Write-Host "  OK Supprimé via cmd." -ForegroundColor Green
             }
