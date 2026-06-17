@@ -117,7 +117,7 @@ Write-Host "[ÉTAPE 2/6] Préparation du module PSWindowsUpdate..." -ForegroundC
 if (-not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
     Write-Host "Installation du module PSWindowsUpdate..." -ForegroundColor Cyan
     try {
-        Install-Module -Name PSWindowsUpdate -Force -Scope CurrentUser -ErrorAction Stop
+        Install-Module -Name PSWindowsUpdate -RequiredVersion 2.2.1.5 -Scope CurrentUser -ErrorAction Stop
         Write-Host "  OK Module installé." -ForegroundColor Green
     } catch {
         Write-Host "  ERREUR lors de l'installation : $_" -ForegroundColor Red
