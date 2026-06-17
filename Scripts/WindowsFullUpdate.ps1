@@ -90,7 +90,19 @@ $TriggerRobloxUpdate = $true
 $LogFile   = "$env:TEMP\WindowsFullUpdate_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
 $Separator        = "=" * 60
 $Script:LogBuffer = [System.Collections.Generic.List[string]]::new()
-$TotalSteps       = 9   # 9 étapes principales (sans Roblox)
+# Étapes principales (sans Roblox) — source de vérité unique pour le total
+$Script:MainSteps = @(
+    "WindowsUpdate"
+    "Winget"
+    "MicrosoftStore"
+    "PowerShell"
+    "Chocolatey"
+    "Scoop"
+    "DevTools"
+    "EdgeWebView2"
+    "SystemCleanup"
+)
+$TotalSteps       = $Script:MainSteps.Count
 
 # Liste des packages winget à ignorer (ID exacts), peuplée par le menu
 $Script:WingetIgnore = [System.Collections.Generic.List[string]]::new()
