@@ -384,7 +384,7 @@ function preprocessOrphanSplices(arr) {
         from: 'node_modules/@typescript-eslint/eslint-plugin',
         to: 'node_modules/@types/prop-types',
         version: fragObj.version,
-        note: 'fragment — fusionnée si champs uniques',
+        note: 'fragment — merged if unique fields',
       });
     }
   }
