@@ -883,9 +883,9 @@ if ($Script:SkippedDueToRunning.Count -gt 0) {
 
 # Statut redémarrage
 $needsReboot = $false
-try { $needsReboot = (Get-WURebootStatus -Silent -ErrorAction SilentlyContinue).RebootRequired } catch {}
-if (-not $needsReboot) { try { $needsReboot = Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired" } catch {} }
-if (-not $needsReboot) { try { $needsReboot = Test-Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\PendingFileRenameOperations" }          catch {} }
+try { $needsReboot = (Get-WURebootStatus -Silent -ErrorAction SilentlyContinue).RebootRequired } catch { Write-Log "INFO: Impossible de lire Get-WURebootStatus (ignoré) : $_" }
+if (-not $needsReboot) { try { $needsReboot = Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired" } catch { Write-Log "INFO: Impossible de lire la clé RebootRequired (ignoré) : $_" } }
+if (-not $needsReboot) { try { $needsReboot = Test-Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\PendingFileRenameOperations" }          catch { Write-Log "INFO: Impossible de lire PendingFileRenameOperations (ignoré) : $_" } }
 
 Write-Host ""
 if ($needsReboot) {
