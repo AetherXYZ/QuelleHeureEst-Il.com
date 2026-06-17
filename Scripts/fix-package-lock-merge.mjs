@@ -291,7 +291,7 @@ function upsert(map, order, key, obj, meta) {
   }
   if (!map.has(key)) {
     map.set(key, structuredClone(obj));
-    ensureOrder(key);
+    ensureOrder(order, key);
     report.merges.push({ key, action: 'insert', version: obj.version, ...meta });
     return;
   }
