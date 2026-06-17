@@ -197,16 +197,16 @@ if (-not $updates) {
         foreach ($selected in $selectedUpdates) {
             Write-Host "Masquage de : $($selected.Title)" -ForegroundColor Yellow
             try {
-                Hide-WindowsUpdate -Title $selected.Title -Confirm:$false -ErrorAction Stop
-                Write-Host "  OK Mise à jour masquée." -ForegroundColor Green
-                $updates = $updates | Where-Object { $_.Title -ne $selected.Title }
+                Hide-WindowsUpdate -UpdateID $selected.Identity.UpdateID -RevisionNumber $selected.Identity.RevisionNumber -Confirm:$false -ErrorAction Stop
+                Write-Host "  OK via UpdateID." -ForegroundColor Green
+                $updates = $updates | Where-Object { $_.Identity.UpdateID -ne $selected.Identity.UpdateID }
             } catch {
                 Write-Host "  ERREUR : $_" -ForegroundColor Red
-                Write-Host "  Tentative via UpdateID..." -ForegroundColor DarkYellow
+                Write-Host "  Tentative via Title..." -ForegroundColor DarkYellow
                 try {
-                    Hide-WindowsUpdate -UpdateID $selected.Identity.UpdateID -RevisionNumber $selected.Identity.RevisionNumber -Confirm:$false -ErrorAction Stop
-                    Write-Host "  OK via UpdateID." -ForegroundColor Green
-                    $updates = $updates | Where-Object { $_.Identity.UpdateID -ne $selected.Identity.UpdateID }
+                    Hide-WindowsUpdate -Title $selected.Title -Confirm:$false -ErrorAction Stop
+                    Write-Host "  OK Mise à jour masquée via Title." -ForegroundColor Green
+                    $updates = $updates | Where-Object { $_.Title -ne $selected.Title }
                 } catch {
                     Write-Host "  ÉCHEC également." -ForegroundColor Red
                 }
