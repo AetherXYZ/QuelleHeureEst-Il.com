@@ -573,8 +573,10 @@ if (Test-StepSkipped 'store') {
     $storeDone = $false
     try {
         Add-Type -AssemblyName "Windows.ApplicationModel" -ErrorAction Stop
+        # NOTE: This hardcoded WinRT type depends on specific Windows Store API availability and may vary by OS version.
         $typeName = 'Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManager, Windows.ApplicationModel.Store.Preview.InstallControl, ContentType=WindowsRuntime'
-        $type = [Type]::GetType($typeName, $true)
+        $type = [Type]::GetType($typeName, $false)
+        if (-not $type) { throw "WinRT type unavailable: $typeName" }
         $mgr     = [Activator]::CreateInstance($type)
         $updates = $mgr.SearchForAllUpdatesAsync().GetAwaiter().GetResult()
         if ($updates.Count -gt 0) {
@@ -587,7 +589,9 @@ if (Test-StepSkipped 'store') {
             Write-SKIP "Aucune mise à jour Store disponible (WinRT)."
             $storeDone = $true
         }
-    } catch {}
+    } catch {
+        Write-INFO "API WinRT Store indisponible ou incompatible, bascule vers winget msstore."
+    }
 
     if (-not $storeDone) {
         if (Test-Cmd "winget") {
