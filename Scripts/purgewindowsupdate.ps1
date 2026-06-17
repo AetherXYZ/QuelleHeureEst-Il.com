@@ -287,8 +287,8 @@ if (Test-Path $catrootPath) {
     }
 }
 
-#  FR// Suppression des caches (Note la virgule ajoutée à Downloader)
-# ENG// Delete cache folders (Note the comma added to Downloader)
+#  FR// Suppression des principaux caches Windows Update et composants associés
+# ENG// Delete main Windows Update cache folders and related components
 $cachePaths = @(
     "$env:SystemRoot\SoftwareDistribution",
     "$env:SystemRoot\System32\catroot2.old",
