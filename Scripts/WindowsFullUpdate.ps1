@@ -631,6 +631,7 @@ if (Test-StepSkipped 'edge') {
         } else {
             Write-INFO "Problème détecté — tentative de réparation EdgeWebView2..."
             # Tentative de réinstallation propre via le programme de réparation intégré
+            # GUID EdgeUpdate Client de Microsoft Edge WebView2 Runtime (registre machine)
             $wv2Key = Get-ItemProperty "HKLM:\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}" -ErrorAction SilentlyContinue
             if ($wv2Key -and (Test-Path $wv2Key.path)) {
                 Start-Process $wv2Key.path -ArgumentList "--reinstall --system-level --verbose-logging" -Wait -NoNewWindow
