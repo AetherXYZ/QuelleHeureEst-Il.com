@@ -117,7 +117,7 @@ Write-Host "[ÉTAPE 2/6] Préparation du module PSWindowsUpdate..." -ForegroundC
 if (-not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
     Write-Host "Installation du module PSWindowsUpdate..." -ForegroundColor Cyan
     try {
-        Install-Module -Name PSWindowsUpdate -Force -Scope CurrentUser -ErrorAction Stop
+        Install-Module -Name PSWindowsUpdate -RequiredVersion 2.2.1.5 -Scope CurrentUser -ErrorAction Stop
         Write-Host "  OK Module installé." -ForegroundColor Green
     } catch {
         Write-Host "  ERREUR lors de l'installation : $_" -ForegroundColor Red
@@ -197,16 +197,16 @@ if (-not $updates) {
         foreach ($selected in $selectedUpdates) {
             Write-Host "Masquage de : $($selected.Title)" -ForegroundColor Yellow
             try {
-                Hide-WindowsUpdate -Title $selected.Title -Confirm:$false -ErrorAction Stop
-                Write-Host "  OK Mise à jour masquée." -ForegroundColor Green
-                $updates = $updates | Where-Object { $_.Title -ne $selected.Title }
+                Hide-WindowsUpdate -UpdateID $selected.Identity.UpdateID -RevisionNumber $selected.Identity.RevisionNumber -Confirm:$false -ErrorAction Stop
+                Write-Host "  OK via UpdateID." -ForegroundColor Green
+                $updates = $updates | Where-Object { $_.Identity.UpdateID -ne $selected.Identity.UpdateID }
             } catch {
                 Write-Host "  ERREUR : $_" -ForegroundColor Red
-                Write-Host "  Tentative via UpdateID..." -ForegroundColor DarkYellow
+                Write-Host "  Tentative via Title..." -ForegroundColor DarkYellow
                 try {
-                    Hide-WindowsUpdate -UpdateID $selected.Identity.UpdateID -RevisionNumber $selected.Identity.RevisionNumber -Confirm:$false -ErrorAction Stop
-                    Write-Host "  OK via UpdateID." -ForegroundColor Green
-                    $updates = $updates | Where-Object { $_.Identity.UpdateID -ne $selected.Identity.UpdateID }
+                    Hide-WindowsUpdate -Title $selected.Title -Confirm:$false -ErrorAction Stop
+                    Write-Host "  OK Mise à jour masquée via Title." -ForegroundColor Green
+                    $updates = $updates | Where-Object { $_.Title -ne $selected.Title }
                 } catch {
                     Write-Host "  ÉCHEC également." -ForegroundColor Red
                 }
@@ -287,8 +287,8 @@ if (Test-Path $catrootPath) {
     }
 }
 
-#  FR// Suppression des caches (Note la virgule ajoutée à Downloader)
-# ENG// Delete cache folders (Note the comma added to Downloader)
+#  FR// Suppression des principaux caches Windows Update et composants associés
+# ENG// Delete main Windows Update cache folders and related components
 $cachePaths = @(
     "$env:SystemRoot\SoftwareDistribution",
     "$env:SystemRoot\System32\catroot2.old",
@@ -303,9 +303,12 @@ foreach ($p in $cachePaths) {
             Write-Host "  OK Dossier supprimé : $p" -ForegroundColor Green
         } catch {
             Write-Host "  Échec via PowerShell, tentative via cmd..." -ForegroundColor DarkYellow
-            cmd /c "rmdir /s /q `"$p`"" 2>$null
+            $cmdError = cmd /c "rmdir /s /q `"$p`"" 2>&1
             if (Test-Path $p) {
                 Write-Host "  [!] ÉCHEC également via cmd (fichiers verrouillés, ils sauteront au reboot)." -ForegroundColor Red
+                if ($cmdError) {
+                    Write-Host "  Détail cmd: $($cmdError -join ' ')" -ForegroundColor DarkGray
+                }
             } else {
                 Write-Host "  OK Supprimé via cmd." -ForegroundColor Green
             }
